@@ -1,0 +1,18 @@
+version: "3"
+services:
+  reverseproxy:
+    build:
+      context: .
+    image: amitgoswami1027/udagram-goswami-reverseproxy 
+  backend_user:
+    build:
+      context: ../../udacity-c3-restapi-user
+    image: amitgoswami1027/udagram-goswami-userapi
+  backend_feed:
+    build:
+      context: ../../udacity-c3-restapi-feed  
+    image: amitgoswami1027/udagram-goswami-feedapi
+  frontend:
+    build:
+      context: ../../udacity-c3-frontend  
+    image: amitgoswami1027/udagram-goswami-ionicfrontendv3

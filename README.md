@@ -1,4 +1,4 @@
-# Capstone - CloudDeveloper Nano Degree Project
+# Capstone - Cloud Developer NanoDegree Project
 
 ## Scope 
 

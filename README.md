@@ -1,9 +1,22 @@
-# Capstone - Cloud Developer NanoDegree Project
+# Capstone Project - Cloud Developer NanoDegree 
 
-## Scope 
+## Overview : The purpose of the cloud developer capstone project is to give you a chance to combine what you've learned throughout the program. This project will be an important part of your portfolio that will help you achieve your Cloud-related career goals.In this project, you will build a cloud-based application, and follow the principles of either the Microservices course (course 3) or the Serverless course (course 4). This will help you demonstrate to potential employers and colleagues that you can independently create and deploy applications using these principles. 
+Possible application ideas would be miniature versions of existing social media or video sharing applications -- any app that can take user input, store it, and allow for user retrieval. The app would also allow for users to log in to access data specific to each user.
 
+#### Instructions
+* Step 1: Propose and Scope the Project
+Identify the use case for your app. We recommend keeping the functionality as simple as possible to start with.
+* Step 2: Choose either microservices or serverless design
+It’s fine to re-use code from your course 3 or course 4 project as a starting point. Review the rubric for each option, to ensure that the application you build satisfies at least 3 of the rubric requirements. Not all rubric items need to be satisfied in order to pass the project. We hope that you’ll feel that you have enough flexibility to focus on the aspects of your application that you are most interested in.
+* Step 3: Build your application
+Build either a containerized microservices app, or a serverless app.
+* Step 4: Test your application
+Write unit tests and perform integration tests or user based testing.
 
-
+#### Links:
+* https://www.simform.com/use-nodejs-with-react/
+* Rubic Guidelines : https://review.udacity.com/#!/rubrics/2578/view
+---------------------------------------------------------------------------------------------------------------------------------------
 # Udagram Microservices Project 
 Udagram is a simple cloud application developed alongside the Udacity Cloud Engineering Nanodegree. It allows users to register and log into a web client, post photos to the feed, and process photos using an image filtering microservice.
 

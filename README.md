@@ -26,6 +26,20 @@ Write unit tests and perform integration tests or user based testing.
 #### Links:
 * https://www.simform.com/use-nodejs-with-react/
 * Rubic Guidelines : https://review.udacity.com/#!/rubrics/2578/view
+
+### AWS EKS (Elastic Kubernetes Service)
+* AWS EKS is a service that we can use to set up Kubernetes.
+* The deployment.yaml file is used to specify how our pods should be created.
+* The service.yaml file is used to specify how our pods are exposed.
+* Kubernetes Service:An abstraction of a set of pods and interface for how to interact with the pods.
+* Pods : 	A set of containers that are deployed together
+
+### KUBERNETES LINKS
+* KUBERNETES IS HARD:https://itnext.io/kubernetes-is-hard-why-eks-makes-it-easier-for-network-and-security-architects-ea6d8b2ca965
+
+
+
+
 ------------------------------------------------------------------------------------------------------------------------------
 
 # MICROSERVICES

@@ -544,3 +544,7 @@ npm i sequelize-typescript@latest --save
     docker push yourdockerhubname/udacity-restapi-feed 
 
 ### IMPORTANT LINKS TO READ
+#### REAL BENEFIT OF MS :https://blog.christianposta.com/microservices/the-real-success-story-of-microservices-architectures/
+#### Kubernetes Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+#### AWS EKS : https://aws.amazon.com/eks/
+

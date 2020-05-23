@@ -60,7 +60,16 @@ Write unit tests and perform integration tests or user based testing.
 ### KUBERNETES LINKS
 * KUBERNETES IS HARD:https://itnext.io/kubernetes-is-hard-why-eks-makes-it-easier-for-network-and-security-architects-ea6d8b2ca965
 
+Loading via dependencies
+# installation with npm
+npm install --save @auth0/auth0-spa-js
 
+# installation with yarn
+yarn add @auth0/auth0-spa-js
+
+Once auth0-spa-js is installed, reference it using an import statement (if you're using a build system such as Webpack):
+
+import createAuth0Client from '@auth0/auth0-spa-js';
 
 
 ------------------------------------------------------------------------------------------------------------------------------

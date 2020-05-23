@@ -27,6 +27,29 @@ Write unit tests and perform integration tests or user based testing.
 * https://www.simform.com/use-nodejs-with-react/
 * Rubic Guidelines : https://review.udacity.com/#!/rubrics/2578/view
 
+### FILESTORES(S3)
+* File stores allow for archiving data. In AWS, the file store is called S3, and the archive resource is called “glacier”.
+* Content Delivery Network (CDN): are a network of proxy servers that are placed closer to end users to deliver data and compute. CDNs 
+  reduce latency for end users.
+* SignedURLs allow clients to send and receive data by directly communicating with the file store. This saves the server from using its 
+  bandwidth to serve as the intermediary that transmits data to and from the client. This is faster for clients as well.
+* Buckets: a simple directory-like system in which to store data
+* Bucket CORS Policy : You'll need this policy to create a bucket where we can use the SignedURL pattern.
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>*</AllowedOrigin>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>PUT</AllowedMethod>
+    <AllowedMethod>DELETE</AllowedMethod>
+    <AllowedMethod>HEAD</AllowedMethod>
+    <AllowedHeader>*</AllowedHeader>
+</CORSRule>
+</CORSConfiguration>
+```
+
 ### AWS EKS (Elastic Kubernetes Service)
 * AWS EKS is a service that we can use to set up Kubernetes.
 * The deployment.yaml file is used to specify how our pods should be created.
@@ -547,4 +570,11 @@ npm i sequelize-typescript@latest --save
 #### REAL BENEFIT OF MS :https://blog.christianposta.com/microservices/the-real-success-story-of-microservices-architectures/
 #### Kubernetes Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 #### AWS EKS : https://aws.amazon.com/eks/
+#### DATABASE READS
+* SQL INJECTIONS
+* https://sequelize.org/master/manual/migrations.html#creating-first-seed
+* https://sequelize.org/master/manual/migrations.html
+* PASSWORD MISUSE : https://haveibeenpwned.com/
+* JWT : https://jwt.io/
+#### 
 

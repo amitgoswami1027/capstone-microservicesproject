@@ -16,7 +16,7 @@ spec:
         api: external        
     spec:
       containers:
-      - image: docker.io/mohllal/udacity-frontend
+      - image: docker.io/amitgoswami1027/capstone_frontend
         name: frontend
         imagePullPolicy: Always        
         ports:

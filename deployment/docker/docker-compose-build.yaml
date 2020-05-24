@@ -3,22 +3,22 @@ services:
   reverseproxy:
     build:
       context: .
-    image: mohllal/reverseproxy
+    image: amitgoswami1027/capstone_reverseproxy
   backend_user:
     build:
-      context: ../../udacity-c3-restapi-user
-    image: mohllal/udacity-restapi-user
+      context: ../../restapi-user
+    image: amitgoswami1027/capstone_restapi-user
   backend_feed:
     build:
-      context: ../../udacity-c3-restapi-feed  
-    image: mohllal/udacity-restapi-feed
+      context: ../../restapi-feed  
+    image: amitgoswami1027/capstone_restapi-feed
   backend_filter:
     build:
-      context: ../../udacity-c3-image-filter
-    image: mohllal/udacity-image-filter
+      context: ../../restapi-image
+    image: amitgoswami1027/capstone_restapi-image
   frontend:
     build:
-      context: ../../udacity-c3-frontend
+      context: ../../frontend
       args:
         - BUILD_ENV=development
-    image: mohllal/udacity-frontend
+    image: amitgoswami1027/capstone_frontend

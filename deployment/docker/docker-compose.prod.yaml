@@ -1,7 +1,7 @@
 version: "3"
 services:
   reverseproxy:
-      image: mohllal/reverseproxy
+      image: amitgoswami1027/capstone_reverseproxy
       ports:
           - 8080:8080
       restart: always
@@ -9,7 +9,7 @@ services:
         - backend-user
         - backend-feed     
   backend-user:
-    image: mohllal/udacity-restapi-user
+    image: amitgoswami1027/capstone_restapi-user
     environment:
       POSTGRESS_USERNAME: $POSTGRESS_USERNAME
       POSTGRESS_PASSWORD: $POSTGRESS_PASSWORD 
@@ -21,7 +21,7 @@ services:
       JWT_SECRET: $JWT_SECRET
       URL: "http://a438417d2607011eaaa110ae3011d93e-1338661806.us-east-1.elb.amazonaws.com:8100"
   backend-feed:
-    image: mohllal/udacity-restapi-feed
+    image: amitgoswami1027/capstone_restapi-feed
     volumes:
       - $HOME/.aws:/root/.aws
     environment:
@@ -35,10 +35,10 @@ services:
       JWT_SECRET: $JWT_SECRET
       URL: "http://a438417d2607011eaaa110ae3011d93e-1338661806.us-east-1.elb.amazonaws.com:8100"
   backend-image-filter:
-    image: mohllal/udacity-image-filter
+    image: amitgoswami1027/capstone_restapi-image
     environment:
       URL: "http://a438417d2607011eaaa110ae3011d93e-1338661806.us-east-1.elb.amazonaws.com:8100"
   frontend:
-    image: mohllal/udacity-frontend
+    image: amitgoswami1027/capstone_frontend
     ports:
       - "8100:80"

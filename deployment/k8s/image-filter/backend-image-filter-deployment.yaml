@@ -15,7 +15,7 @@ spec:
         service: backend-image-filter
     spec:
       containers:
-      - image: docker.io/mohllal/udacity-image-filter
+      - image: docker.io/amitgoswami1027/capstone_restapi-image
         name: backend-image-filter
         imagePullPolicy: Always  
         resources:

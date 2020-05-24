@@ -15,7 +15,7 @@ spec:
         service: backend-feed
     spec:
       containers:
-      - image: docker.io/mohllal/udacity-restapi-feed
+      - image: docker.io/amitgoswami1027/capstone_restapi-feed
         name: backend-feed
         imagePullPolicy: Always  
         resources:

@@ -10,182 +10,9 @@ The project is split into four services:
 3. [RESTful API Service](./restapi-feed/), a Node-Express server which is used to list feeds and upload feed images to an AWS S3 bucket.
 4. [RESTful API Service](./image-filter/), a Node-Express server which runs a simple script to process images.
 
-
-#### Instructions
-* Step 1: Propose and Scope the Project
-Identify the use case for your app. We recommend keeping the functionality as simple as possible to start with.
-* Step 2: Choose either microservices or serverless design
-It’s fine to re-use code from your course 3 or course 4 project as a starting point. Review the rubric for each option, to ensure that the application you build satisfies at least 3 of the rubric requirements. Not all rubric items need to be satisfied in order to pass the project. We hope that you’ll feel that you have enough flexibility to focus on the aspects of your application that you are most interested in.
-* Step 3: Build your application
-Build either a containerized microservices app, or a serverless app.
-* Step 4: Test your application
-Write unit tests and perform integration tests or user based testing.
-
 #### Links:
 * https://www.simform.com/use-nodejs-with-react/
 * Rubic Guidelines : https://review.udacity.com/#!/rubrics/2578/view
-
-### AUTH0 INTEGRATION 
-### Angular: Authentication : Our app's basic authentication should include:
-* Login and logout
-* User profile and token management
-* Session persistence
-* Authorization of HTTP requests with access token
-
-#### STEP-01 : Install Auth0.js
-*  npm install auth0-js@latest --save
-#### STEP-02 : Dynamic Environment Configuration
-Let's create a file to store information about our app's environment. We're currently developing on localhost:4200, but the app will be deployed on the Node server eventually, and in production, it will run on a reverse proxy. We'll need to make sure our development environment doesn't break our production environment and vice versa. Create a folder: src/app/core, then add a file there called env.config.ts:
-```
-/ src/app/core/env.config.ts
-const _isDev = window.location.port.indexOf('4200') > -1;
-const getHost = () => {
-  const protocol = window.location.protocol;
-  const host = window.location.host;
-  return `${protocol}//${host}`;
-};
-const apiURI = _isDev ? 'http://localhost:8083/api/' : `/api/`;
-
-export const ENV = {
-  BASE_URI: getHost(),
-  BASE_API: apiURI
-};
-
-```
-Another way to do this would be to set up your environments/environment.*.ts files with environment-dependent settings.
-#### STEP-03 : Authentication Configuration
-We'll store our Auth0 authentication configuration in an auth.config.ts file. Create the following blank file: src/app/auth/auth.config.ts.
-```
-import { ENV } from './../core/env.config';
-
-interface AuthConfig {
-  CLIENT_ID: string;
-  CLIENT_DOMAIN: string;
-  AUDIENCE: string;
-  REDIRECT: string;
-  SCOPE: string;
-};
-
-export const AUTH_CONFIG: AuthConfig = {
-  CLIENT_ID: '[AUTH0_CLIENT_ID]',
-  CLIENT_DOMAIN: '[AUTH0_CLIENT_DOMAIN]', // e.g., you.auth0.com
-  AUDIENCE: '[YOUR_AUTH0_API_AUDIENCE]', // e.g., http://localhost:8083/api/
-  REDIRECT: `${ENV.BASE_URI}/callback`,
-  SCOPE: 'openid profile'
-};
-```
-#### STEP-04 : Authentication Service
-* Authentication logic on the front end will be handled with an AuthService authentication service. Now open the generated 
-  auth.service.ts file and add the necessary code to our authentication service. This service uses the config variables from 
-  auth.config.ts to instantiate an auth0.js WebAuth instance. An RxJS BehaviorSubject is used to provide a stream of authentication 
-  status events that we can subscribe to anywhere in the app.
-* The constructor checks the app authentication status upon initialization. If the user has not logged out of our Angular app from a 
-  previous session (their token has not expired), we'll call a method called renewToken() to verify that their Auth0 session on the 
-  authentication server is also still valid. If it is, we'll receive a fresh access token.
-* Note: The Angular app's authentication lifespan is not the same thing as the authentication session on the server. We manage the 
-  Angular app authentication with the expiration of the JWT access token, and the persistence or removal of this tells us whether or not 
-  to ask the server if the user's Auth0 authentication session is still valid when initializing the app.
-* We'll receive an an access_token and a time until token expiration (expiresIn) from Auth0 when returning to our app. The handleAuth() 
-  method uses Auth0's parseHash() method callback to get the user's profile (_getProfile()) and set the session (_setSession()) by 
-  saving the tokens, expiration, and profile to local storage and calling setLoggedIn() so that any components in the app are informed 
-  that the user is now authenticated.
-* Finally, we'll implement the renewToken() method, which uses the Auth0 checkSession() method to request a fresh access token from 
-  Auth0 if the user's authentication session is still active. If there is no session active, we won't take any action
-#### STEP-05 : Provide AuthService in App Module
-In order to use the AuthService methods and properties anywhere in our app, we need to add the service to the providers array in our app.module.ts:
-```
-import { AuthService } from './auth/auth.service';
-```
-#### STEP-05 : Create a Callback Component
-Next we'll create a Callback component. This is where the app is redirected after authentication. This component handles the authentication information and then shows a loading message until hash parsing is completed and the Angular app redirects back to the home page. The authentication service's handleAuth() method must be called in the callback.component.ts constructor so it will run on initialization of our app:
-```
-// src/app/pages/callback/callback.component.ts
-import { AuthService } from './auth/auth.service';
-...
-  constructor(private auth: AuthService) {
-    // Check for authentication and handle if hash present
-    auth.handleAuth();
-  }
-...
-All we need to do in this component's template is change the text in callback.component.html to Loading..., like so:
-```
-<!-- src/app/pages/callback/callback.component.html -->
-<div>
-  Loading...
-</div>
-* NOTE : ADD Component to routing module: For now, let's add the component to our routing module, app-routing.module.ts:
-```
-// src/app/app-routing.module.ts
-...
-import { CallbackComponent } from './pages/callback/callback.component';
-
-const routes: Routes = [
-  ...
-  {
-    path: 'callback',
-    component: CallbackComponent
-  }
-];
-```
-##### STEP-06 : Add Login and Logout to Header Component
-Open up the header.component.ts file:
-```
-// src/app/header/header.component.ts
-...
-import { AuthService } from './../auth/auth.service';
-...
-export class HeaderComponent implements OnInit {
-  ...
-  constructor(
-    ...,
-    public auth: AuthService) { }
-  ...
-}
-```
-Now let's add login, logout, and a user greeting to the header.component.html template:
-```
-<!-- src/app/header/header.component.html -->
-<header id="header" class="header">
-  <div class="header-page bg-primary">
-    ...
-    <div class="header-page-authStatus">
-      <span *ngIf="auth.loggingIn">Logging in...</span>
-      <ng-template [ngIf]="!auth.loggingIn">
-        <a *ngIf="!auth.loggedIn" (click)="auth.login()">Log In</a>
-        <span *ngIf="auth.loggedIn && auth.userProfile">
-          {{ auth.userProfile.name }}
-          <span class="divider">|</span>
-          <a (click)="auth.logout()">Log Out</a>
-        </span>
-      </ng-template>
-    </div>
-  ...
-```
-
-
-* https://dragonprogrammer.com/securing-angular-auth0/
-### FILESTORES(S3)
-* File stores allow for archiving data. In AWS, the file store is called S3, and the archive resource is called “glacier”.
-* Content Delivery Network (CDN): are a network of proxy servers that are placed closer to end users to deliver data and compute. CDNs 
-  reduce latency for end users.
-* SignedURLs allow clients to send and receive data by directly communicating with the file store. This saves the server from using its 
-  bandwidth to serve as the intermediary that transmits data to and from the client. This is faster for clients as well.
-* Buckets: a simple directory-like system in which to store data
-* Bucket CORS Policy : You'll need this policy to create a bucket where we can use the SignedURL pattern.
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
-<CORSRule>
-    <AllowedOrigin>*</AllowedOrigin>
-    <AllowedMethod>POST</AllowedMethod>
-    <AllowedMethod>GET</AllowedMethod>
-    <AllowedMethod>PUT</AllowedMethod>
-    <AllowedMethod>DELETE</AllowedMethod>
-    <AllowedMethod>HEAD</AllowedMethod>
-    <AllowedHeader>*</AllowedHeader>
-</CORSRule>
-</CORSConfiguration>
-```
 
 ### AWS EKS (Elastic Kubernetes Service)
 * AWS EKS is a service that we can use to set up Kubernetes.
@@ -208,7 +35,28 @@ Once auth0-spa-js is installed, reference it using an import statement (if you'r
 
 import createAuth0Client from '@auth0/auth0-spa-js';
 
-
+### FILESTORES(S3)
+* File stores allow for archiving data. In AWS, the file store is called S3, and the archive resource is called “glacier”.
+* Content Delivery Network (CDN): are a network of proxy servers that are placed closer to end users to deliver data and compute. CDNs 
+  reduce latency for end users.
+* SignedURLs allow clients to send and receive data by directly communicating with the file store. This saves the server from using its 
+  bandwidth to serve as the intermediary that transmits data to and from the client. This is faster for clients as well.
+* Buckets: a simple directory-like system in which to store data
+* Bucket CORS Policy : You'll need this policy to create a bucket where we can use the SignedURL pattern.
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>*</AllowedOrigin>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>PUT</AllowedMethod>
+    <AllowedMethod>DELETE</AllowedMethod>
+    <AllowedMethod>HEAD</AllowedMethod>
+    <AllowedHeader>*</AllowedHeader>
+</CORSRule>
+</CORSConfiguration>
+```
 ------------------------------------------------------------------------------------------------------------------------------
 
 # MICROSERVICES
@@ -722,5 +570,6 @@ npm i sequelize-typescript@latest --save
 * https://sequelize.org/master/manual/migrations.html
 * PASSWORD MISUSE : https://haveibeenpwned.com/
 * JWT : https://jwt.io/
+* https://www.digitalocean.com/community/tutorials/angular-authentication-auth0
 #### 
 

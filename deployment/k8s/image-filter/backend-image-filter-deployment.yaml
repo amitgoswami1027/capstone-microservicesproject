@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: backend-image-filter
+  name: backend-image-filter
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      service: backend-image-filter
+  template:
+    metadata:
+      labels:
+        service: backend-image-filter
+    spec:
+      containers:
+      - image: docker.io/mohllal/udacity-image-filter
+        name: backend-image-filter
+        imagePullPolicy: Always  
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"      
+        env:
+        - name: URL
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: URL
+      restartPolicy: Always
+
+

@@ -20,5 +20,5 @@ services:
     build:
       context: ../../udacity-c3-frontend
       args:
-        - BUILD_ENV=development
+        - BUILD_ENV=production
     image: mohllal/udacity-frontend

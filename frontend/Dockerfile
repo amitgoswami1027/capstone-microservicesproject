@@ -1,5 +1,7 @@
 ## Build
 FROM beevelop/ionic AS ionic
+ARG BUILD_ENV
+
 # Create app directory
 WORKDIR /usr/src/app
 # Install app dependencies
@@ -9,7 +11,10 @@ COPY package*.json ./
 RUN npm ci
 # Bundle app source
 COPY . .
-RUN ionic build --external
+RUN if [ "$BUILD_ENV" = "development" ]; \
+	then ionic build;  \
+	else ionic build --prod; \
+	fi
 
 ## Run 
 FROM nginx:alpine

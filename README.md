@@ -27,6 +27,10 @@ Write unit tests and perform integration tests or user based testing.
 * https://www.simform.com/use-nodejs-with-react/
 * Rubic Guidelines : https://review.udacity.com/#!/rubrics/2578/view
 
+### AUTH0 INTEGRATION 
+
+
+* https://dragonprogrammer.com/securing-angular-auth0/
 ### FILESTORES(S3)
 * File stores allow for archiving data. In AWS, the file store is called S3, and the archive resource is called “glacier”.
 * Content Delivery Network (CDN): are a network of proxy servers that are placed closer to end users to deliver data and compute. CDNs 

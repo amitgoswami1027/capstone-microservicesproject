@@ -57,6 +57,17 @@ import createAuth0Client from '@auth0/auth0-spa-js';
 </CORSRule>
 </CORSConfiguration>
 ```
+
+### MY AWS ENVIRONMENT SETUP FOR DEPLOYMENT 
+* STEP-01 : Create the VPC - CapstoneVPC (10.0.0.0/16). Create the three subnets:
+  * Capstone_publicsubnet01 (10.0.1.0/24); Availability Zone: us-east-1a 
+  * Capstone_privatesubnet02 (10.0.2.0/24); Availability Zone: us-east-1b
+  * Capstone_publicsubnet03 (10.0.3.0/24); Availability Zone: us-east-1c
+* STEP-02 : Create the Internet Gateway (IGW) : CapstoneIGW.  Attach the VPC (CapstoneVPC) to the CapstoneIGW.
+* STEP-03 : Create the route table - Capstone_mypublicroute and associate it with the CapstoneVPC. Every subnet we create is by default 
+  associated with the main route table. Edit routes in the custom route table to add the route to internet via CapstoneIGW. After this 
+  edit the "subnet associations" and add the public subnets to it.
+* STEP-04 : 
 ------------------------------------------------------------------------------------------------------------------------------
 
 # MICROSERVICES

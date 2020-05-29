@@ -42,9 +42,7 @@ import createAuth0Client from '@auth0/auth0-spa-js';
 * SignedURLs allow clients to send and receive data by directly communicating with the file store. This saves the server from using its 
   bandwidth to serve as the intermediary that transmits data to and from the client. This is faster for clients as well.
 * Buckets: a simple directory-like system in which to store data
-* Bucket CORS Policy : You'll need this policy to create a bucket where we can use the SignedURL pattern.
-```
-<?xml version="1.0" encoding="UTF-8"?>
+* Bucket CORS Policy : You'll need this policy to create a bucket where we can use the SignedURL pattern.<?xml version="1.0" encoding="UTF-8"?>
 <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
 <CORSRule>
     <AllowedOrigin>*</AllowedOrigin>
@@ -56,6 +54,8 @@ import createAuth0Client from '@auth0/auth0-spa-js';
     <AllowedHeader>*</AllowedHeader>
 </CORSRule>
 </CORSConfiguration>
+```
+
 ```
 
 ### MY AWS ENVIRONMENT SETUP FOR DEPLOYMENT 
@@ -474,7 +474,8 @@ Current repo [Clone the project repo]
 
 ### Task-08 - Problem connecting to postgress database on AWS from EC2 instance
 1. Check the username/password.
-2. Security Groups while creating RDS -Postgress, allocate default security group which does not have permission for inbound and 
+2. Security Groups while creating RDS -Pos
+tgress, allocate default security group which does not have permission for inbound and 
    outbound traffic. Need to update the same.
 
 ### Task-09 Installing Dockers on AWS EC2 Linux instance (Docker Installation)
@@ -570,6 +571,8 @@ npm i sequelize-typescript@latest --save
     docker exec -it feed bash
 14. Pushing the images to dockerhub
     docker push yourdockerhubname/udacity-restapi-feed 
+
+npm add -D 'mmvsk/ts-node-dev#d7e9cfbad414bcc5fc9ddb5cf75a74496a9e4549'
 
 ### IMPORTANT LINKS TO READ
 #### REAL BENEFIT OF MS :https://blog.christianposta.com/microservices/the-real-success-story-of-microservices-architectures/

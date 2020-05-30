@@ -70,12 +70,10 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
       * 6. Test to ensure the version you installed is up-to-date: kubectl version --client https://github.com/kubermatic/kubeone/blob/master/docs/quickstart-aws.md
     * B: Set up aws-iam-authenticator : Amazon EKS uses IAM to provide authentication to  Kubernetes cluster through the AWS IAM 
          authenticator for Kubernetes.
-      * 1. Download the Amazon EKS-vended aws-iam-authenticator binary from Amazon S3; curl -o aws-iam-authenticator https://amazon-
-           eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
+      * 1. Download the Amazon EKS-vended aws-iam-authenticator binary from Amazon S3; curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
       * 2. Apply execute permissions to the binary; chmod +x ./aws-iam-authenticator
       * 3. Copy the binary to a folder in your $PATH. We recommend creating a $HOME/bin/aws-iam-authenticator and ensuring that 
-           $HOME/bin comes first in your $PATH;  mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && 
-           export PATH=$PATH:$HOME/bin
+           $HOME/bin comes first in your $PATH;  mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
       * 4. Add $HOME/bin to your PATH environment variable; echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
       * 5. Test that the aws-iam-authenticator binary works; aws-iam-authenticator help
     * C: Set up kubeconfig : Amazon EKS uses the aws eks get-token command, available in version 1.16.156 or later of the AWS CLI or the 
@@ -89,6 +87,8 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
   * kubectl cluster-info - display information about the cluster
   * kubectl apply -f deployment.yaml
 
+
+https://eksworkshop.com/spot/cloudformation/kubeconfig/
 CONTAINERS: Abstraction of an application and its dependencies 
 KUBERNETES PODS: Abstraction of multiple containers
 KUBERNETES SERVICES: Abstraction of pods and their interfaces

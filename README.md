@@ -43,6 +43,7 @@ import createAuth0Client from '@auth0/auth0-spa-js';
   bandwidth to serve as the intermediary that transmits data to and from the client. This is faster for clients as well.
 * Buckets: a simple directory-like system in which to store data
 * Bucket CORS Policy : You'll need this policy to create a bucket where we can use the SignedURL pattern.<?xml version="1.0" encoding="UTF-8"?>
+```
 <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
 <CORSRule>
     <AllowedOrigin>*</AllowedOrigin>
@@ -55,9 +56,6 @@ import createAuth0Client from '@auth0/auth0-spa-js';
 </CORSRule>
 </CORSConfiguration>
 ```
-
-```
-
 ### MY AWS ENVIRONMENT SETUP FOR DEPLOYMENT 
 * STEP-01 : Create the VPC - CapstoneVPC (10.0.0.0/16). Create the three subnets:
   * Capstone_publicsubnet01 (10.0.1.0/24); Availability Zone: us-east-1a 
@@ -68,7 +66,6 @@ import createAuth0Client from '@auth0/auth0-spa-js';
   associated with the main route table. Edit routes in the custom route table to add the route to internet via CapstoneIGW. After this 
   edit the "subnet associations" and add the public subnets to it.
 * STEP-04 : 
-------------------------------------------------------------------------------------------------------------------------------
 
 # MICROSERVICES
 * Microservices are an architectural style where an application is composed of modules that can be independently developed and deployed.
@@ -300,8 +297,7 @@ https://github.com/makinwab/microservice-project-udacity
 Kubernetes Dashboard is a general purpose, web-based UI for Kubernetes clusters. It allows users to manage applications running in the cluster and troubleshoot them, as well as manage the cluster itself.
 * To deploy Dashboard, execute following command:
   * kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc7/aio/deploy/recommended.yaml
-* kubectl proxy
-  * 
+* kubectl proxy 
 
 ### K8s Deployments
 Controller specifies the necessary attributes and state of Pods and ReplicaSets in a .yaml configuration file, which is called Deployment. This configuration file provides declarative updates to create and manage Pods / ReplicaSets. We define a Deployment to:
@@ -375,9 +371,7 @@ kubectl scale deployment/user --replicas=10
 
 ### CI System Example
 
-
 # Udagram Image Filtering Microservice
-
 Udagram is a simple cloud application developed alongside the Udacity Cloud Engineering Nanodegree. It allows users to register and log into a web client, post photos to the feed, and process photos using an image filtering microservice.
 
 The project is split into three parts:
@@ -425,10 +419,8 @@ ionic serve
 
 ### Building the Static Frontend Files
 Ionic CLI can build the frontend into static HTML/CSS/JavaScript files. These files can be uploaded to a host to be consumed by users on the web. Build artifacts are located in `./www`. To build from source, open terminal and run:
-```bash
 ionic build
-```
-***
+
 ----------------------------------------------------------------------------------------------------------------------------
 #### Udagram microservices project, I have setup my development environment on AWS EC2 interface. Reason for doing so is I have windows home edition system and finding it challanging to do the setup for docker and kubernetes on it. Also it add a bit of additional complexity to project, but it help me to learn a lot about the AWS ecosystem and understanding about the different components. My Udagram frontend is deployed on S3 bucket and other rest apis on the EC2 interface. Please find the following steps for the project development instructions.
 
@@ -572,8 +564,6 @@ npm i sequelize-typescript@latest --save
 14. Pushing the images to dockerhub
     docker push yourdockerhubname/udacity-restapi-feed 
 
-npm add -D 'mmvsk/ts-node-dev#d7e9cfbad414bcc5fc9ddb5cf75a74496a9e4549'
-
 ### IMPORTANT LINKS TO READ
 #### REAL BENEFIT OF MS :https://blog.christianposta.com/microservices/the-real-success-story-of-microservices-architectures/
 #### Kubernetes Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
@@ -585,5 +575,5 @@ npm add -D 'mmvsk/ts-node-dev#d7e9cfbad414bcc5fc9ddb5cf75a74496a9e4549'
 * PASSWORD MISUSE : https://haveibeenpwned.com/
 * JWT : https://jwt.io/
 * https://www.digitalocean.com/community/tutorials/angular-authentication-auth0
-#### 
+
 

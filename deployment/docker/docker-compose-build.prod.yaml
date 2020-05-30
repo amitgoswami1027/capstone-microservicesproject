@@ -3,22 +3,22 @@ services:
   reverseproxy:
     build:
       context: .
-    image: amitgoswami1027/capstone_reverseproxy
+    image: amitgoswami1027/capstone-reverseproxyv2
   backend_user:
     build:
       context: ../../restapi-user
-    image: amitgoswami1027/capstone_restapi-user
+    image: amitgoswami1027/capstone-restapi-userv2
   backend_feed:
     build:
       context: ../../restapi-feed  
-    image: amitgoswami1027/capstone_restapi-feed
+    image: amitgoswami1027/capstone-restapi-feedv2
   backend_filter:
     build:
       context: ../../restapi-image
-    image: amitgoswami1027/capstone_restapi-image
+    image: amitgoswami1027/capstone-restapi-imagev2
   frontend:
     build:
       context: ../../frontend
       args:
         - BUILD_ENV=production
-    image: amitgoswami1027/capstone_frontend
+    image: amitgoswami1027/capstone-frontend

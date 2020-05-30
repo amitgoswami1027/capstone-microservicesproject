@@ -15,7 +15,7 @@ spec:
         service: reverseproxy
     spec:
       containers:
-      - image: docker.io/amitgoswami1027/capstone_reverseproxy
+      - image: docker.io/amitgoswami1027/capstone-reverseproxyv2
         name: reverseproxy
         imagePullPolicy: Always
         resources:

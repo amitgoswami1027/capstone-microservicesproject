@@ -1,7 +1,7 @@
 version: "3"
 services:
   reverseproxy:
-      image: amitgoswami1027/capstone_reverseproxy
+      image: amitgoswami1027/capstone-reverseproxyv2
       ports:
           - 8080:8080
       restart: always
@@ -9,36 +9,22 @@ services:
         - backend-user
         - backend-feed     
   backend-user:
-    image: amitgoswami1027/capstone_restapi-user
-    environment:
-      POSTGRESS_USERNAME: $POSTGRESS_USERNAME
-      POSTGRESS_PASSWORD: $POSTGRESS_PASSWORD 
-      POSTGRESS_DB: $POSTGRESS_DB 
-      POSTGRESS_HOST: $POSTGRESS_HOST 
-      AWS_REGION: $AWS_REGION 
-      AWS_PROFILE: $AWS_PROFILE 
-      AWS_BUCKET: $AWS_BUCKET
-      JWT_SECRET: $JWT_SECRET
-      URL: "http://localhost:8100"
+      image: amitgoswami1027/capstone-restapi-userv2
+      volumes:
+        - $HOME/.aws:/root/.aws
+      env_file: 
+        - .env  
   backend-feed:
-    image: amitgoswami1027/capstone_restapi-feed
-    volumes:
-      - $HOME/.aws:/root/.aws
-    environment:
-      POSTGRESS_USERNAME: $POSTGRESS_USERNAME
-      POSTGRESS_PASSWORD: $POSTGRESS_PASSWORD 
-      POSTGRESS_DB: $POSTGRESS_DB 
-      POSTGRESS_HOST: $POSTGRESS_HOST 
-      AWS_REGION: $AWS_REGION 
-      AWS_PROFILE: $AWS_PROFILE 
-      AWS_BUCKET: $AWS_BUCKET
-      JWT_SECRET: $JWT_SECRET
-      URL: "http://localhost:8100"
+      image: amitgoswami1027/capstone-restapi-feedv2
+      volumes:
+        - $HOME/.aws:/root/.aws
+      env_file:
+        - .env
   backend-image-filter:
-    image: amitgoswami1027/capstone_restapi-image
-    environment:
-      URL: "http://localhost:8100"
+      image: amitgoswami1027/capstone-restapi-imagev2
+      env_file:
+        - .env
   frontend:
-    image: amitgoswami1027/capstone_frontend
-    ports:
-      - "8100:80"
+      image: amitgoswami1027/capstone-frontend
+      ports:
+        - "8100:80"

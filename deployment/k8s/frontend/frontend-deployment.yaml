@@ -16,7 +16,7 @@ spec:
         api: external        
     spec:
       containers:
-      - image: docker.io/amitgoswami1027/capstone_frontend
+      - image: docker.io/amitgoswami1027/capstone-frontend
         name: frontend
         imagePullPolicy: Always        
         ports:

@@ -4,7 +4,7 @@ metadata:
   name: pod-example
 spec:
   containers:
-  - image: amitgoswami1027/capstone_reverseproxy
+  - image: amitgoswami1027/capstone-reverseproxyv2
     name: reverseproxy
     imagePullPolicy: Always          
     resources:

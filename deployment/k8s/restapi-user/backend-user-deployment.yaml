@@ -15,7 +15,7 @@ spec:
         service: backend-user
     spec:
       containers:
-      - image: docker.io/amitgoswami1027/capstone_restapi-user
+      - image: docker.io/amitgoswami1027/capstone-restapi-userv2
         name: backend-user 
         imagePullPolicy: Always  
         resources:

@@ -1,8 +1,8 @@
-# Capstone Project(MicroServices) - Cloud Developer NanoDegree 
+## Capstone Microservices Project(Cloud Developer) NanoDegree 
 
-## Overview : The purpose of the cloud developer capstone project is to give you a chance to combine what you've learned throughout the program. This project will be an important part of your portfolio that will help you achieve your Cloud-related career goals.
+### Overview : The purpose of the cloud developer capstone project is to give you a chance to combine what you've learned throughout the program. This project will be an important part of your portfolio that will help you achieve your Cloud-related career goals.
 
-## SCOPE: Capstone Project is a cloud application developed for Udacity Cloud Engineering Nanodegree. It allows users to register and log into a web client, post photos to the feed, and process photos using an image filtering microservice. 
+### PROJECT PROPOSAL(SCOPE): Capstone Project is a cloud application developed for Udacity Cloud Engineering Nanodegree. It allows users to register and log into a web client, post photos to the feed, and process photos using an image filtering microservice. I will be using the AWS for deploying the microservices project. Will be using IAM, S3, RDS-Postgres, VPC, Subnets, Internet Gatway(IGW), EC2, ELB, Dockers, EKS -Elastic kubernetes services to deploy the microservices on AWS Cloud.
 
 The project is split into four services:
 1. [The Ionic Client](./frontend/)- Ionic client web application which consumes the RestAPI Backend.
@@ -10,9 +10,88 @@ The project is split into four services:
 3. [RESTful API Service](./restapi-feed/), a Node-Express server which is used to list feeds and upload feed images to an AWS S3 bucket.
 4. [RESTful API Service](./image-filter/), a Node-Express server which runs a simple script to process images.
 
-#### Links:
-* https://www.simform.com/use-nodejs-with-react/
-* Rubic Guidelines : https://review.udacity.com/#!/rubrics/2578/view
+Here goes the AWS deployment diagram and will be replicating the same for the project deployment. 
+![](images/awsprojectarch.png)
+
+## PROJECT AWS ENVIRONMENT SETUP FOR DEPLOYMENT 
+* STEP-01 : Create the VPC - CapstoneVPC (10.0.0.0/16). Create the three subnets:
+  * Capstone_publicsubnet01 (10.0.1.0/24); Availability Zone: us-east-1a 
+  * Capstone_privatesubnet02 (10.0.2.0/24); Availability Zone: us-east-1b
+  * Capstone_publicsubnet03 (10.0.3.0/24); Availability Zone: us-east-1c
+* STEP-02 : Create the Internet Gateway (IGW) : CapstoneIGW.  Attach the VPC (CapstoneVPC) to the CapstoneIGW.
+* STEP-03 : Create the route table - Capstone_mypublicroute and associate it with the CapstoneVPC. Every subnet we create is by default 
+  associated with the main route table. Edit routes in the custom route table to add the route to internet via CapstoneIGW. After this 
+  edit the "subnet associations" and add the public subnets to it.
+* STEP-04 : Create the RDS-Postgress-"capstonerds" database in the Capstone_privatesubnet02. 
+* STEP-05 : Create the S3 Bucket(FILESTORES) in the Capstone_publicsubnet01.
+  * File stores allow for archiving data. In AWS, the file store is called S3, and the archive resource is called “glacier”.
+  * Content Delivery Network (CDN): are a network of proxy servers that are placed closer to end users to deliver data and compute. CDNs 
+    reduce latency for end users.
+  * SignedURLs allow clients to send and receive data by directly communicating with the file store. This saves the server from using 
+    its bandwidth to serve as the intermediary that transmits data to and from the client. This is faster for clients as well.
+  * Buckets: a simple directory-like system in which to store data
+  * Bucket CORS Policy : You'll need this policy to create a bucket where we can use the SignedURL pattern.<?xml version="1.0" 
+    encoding="UTF-8"?>
+    ```
+    <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+    <CORSRule>
+       <AllowedOrigin>*</AllowedOrigin>
+       <AllowedMethod>POST</AllowedMethod>
+       <AllowedMethod>GET</AllowedMethod>
+       <AllowedMethod>PUT</AllowedMethod>
+       <AllowedMethod>DELETE</AllowedMethod>
+       <AllowedMethod>HEAD</AllowedMethod>
+       <AllowedHeader>*</AllowedHeader>
+    </CORSRule>
+    </CORSConfiguration>
+    ```
+* STEP-06 : EKS (AWS-Elastic Kubernetes Service)- Amazon EKS is a managed service that makes it easy for you to use Kubernetes on AWS 
+  without needing to install and operate your own Kubernetes control plane. Amazon EKS exposes a Kubernetes API endpoint. Your existing 
+  Kubernetes tooling can connect directly to EKS managed control plane. Worker nodes run as EC2 instances in your account.
+  * Creating an EKS Cluster
+     * Create cluster in EKS
+     * Create and specify role for Kubernetes cluster
+     * Enable public access
+  * Creating a Node Group
+     * Add Node Group in the newly-created cluster
+     * Create and specify role for IAM role for node group
+     * Create and specify SSH key for node group
+     * Set instance type to t3.micro for cost-savings as we learn how to use Kubernetes
+     * Specify desired number of nodes
+* STEP-07 : At this point, we have setup Kubernetes cluster and created YAML files for deployment of pods and services. Now need to 
+  configure Kubernetes command-line tool - kubectl, to interact with our cluster.
+  * Interacting With Your Cluster
+    * A: Install kubectl on Linux - [Done]
+      * 1. Download the latest release with the command: curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+      * 2. To download a specific version, replace the : curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
+      * 3. For example, to download version v1.18.0 on Linux, type: curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
+      * 4. Make the kubectl binary executable; chmod +x ./kubectl
+      * 5. Move the binary in to your PATH; sudo mv ./kubectl /usr/local/bin/kubectl
+      * 6. Test to ensure the version you installed is up-to-date: kubectl version --client https://github.com/kubermatic/kubeone/blob/master/docs/quickstart-aws.md
+    * B: Set up aws-iam-authenticator : Amazon EKS uses IAM to provide authentication to  Kubernetes cluster through the AWS IAM 
+         authenticator for Kubernetes.
+      * 1. Download the Amazon EKS-vended aws-iam-authenticator binary from Amazon S3; curl -o aws-iam-authenticator https://amazon-
+           eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
+      * 2. Apply execute permissions to the binary; chmod +x ./aws-iam-authenticator
+      * 3. Copy the binary to a folder in your $PATH. We recommend creating a $HOME/bin/aws-iam-authenticator and ensuring that 
+           $HOME/bin comes first in your $PATH;  mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && 
+           export PATH=$PATH:$HOME/bin
+      * 4. Add $HOME/bin to your PATH environment variable; echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+      * 5. Test that the aws-iam-authenticator binary works; aws-iam-authenticator help
+    * C: Set up kubeconfig : Amazon EKS uses the aws eks get-token command, available in version 1.16.156 or later of the AWS CLI or the 
+         AWS IAM Authenticator for Kubernetes with kubectl for cluster authentication. 
+* STEP-08 : Command: sudo aws eks --region us-east-1 update-kubeconfig --name CapstoneDeploymentK8Cluster 
+  Above command takes the EKS kubernetes cluster and bind it to the kubectl command. Kubeclt command is used to intract with the 
+  cluster.
+* STEP-09 : Some kubectl command to intract with the EKS Cluster.
+  * kubectl get pods - show the pods in the cluster
+  * kubectl describe services - show the services in the cluster
+  * kubectl cluster-info - display information about the cluster
+  * kubectl apply -f deployment.yaml
+
+CONTAINERS: Abstraction of an application and its dependencies 
+KUBERNETES PODS: Abstraction of multiple containers
+KUBERNETES SERVICES: Abstraction of pods and their interfaces
 
 ### AWS EKS (Elastic Kubernetes Service)
 * AWS EKS is a service that we can use to set up Kubernetes.
@@ -35,37 +114,11 @@ Once auth0-spa-js is installed, reference it using an import statement (if you'r
 
 import createAuth0Client from '@auth0/auth0-spa-js';
 
-### FILESTORES(S3)
-* File stores allow for archiving data. In AWS, the file store is called S3, and the archive resource is called “glacier”.
-* Content Delivery Network (CDN): are a network of proxy servers that are placed closer to end users to deliver data and compute. CDNs 
-  reduce latency for end users.
-* SignedURLs allow clients to send and receive data by directly communicating with the file store. This saves the server from using its 
-  bandwidth to serve as the intermediary that transmits data to and from the client. This is faster for clients as well.
-* Buckets: a simple directory-like system in which to store data
-* Bucket CORS Policy : You'll need this policy to create a bucket where we can use the SignedURL pattern.<?xml version="1.0" encoding="UTF-8"?>
-```
-<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
-<CORSRule>
-    <AllowedOrigin>*</AllowedOrigin>
-    <AllowedMethod>POST</AllowedMethod>
-    <AllowedMethod>GET</AllowedMethod>
-    <AllowedMethod>PUT</AllowedMethod>
-    <AllowedMethod>DELETE</AllowedMethod>
-    <AllowedMethod>HEAD</AllowedMethod>
-    <AllowedHeader>*</AllowedHeader>
-</CORSRule>
-</CORSConfiguration>
-```
-### MY AWS ENVIRONMENT SETUP FOR DEPLOYMENT 
-* STEP-01 : Create the VPC - CapstoneVPC (10.0.0.0/16). Create the three subnets:
-  * Capstone_publicsubnet01 (10.0.1.0/24); Availability Zone: us-east-1a 
-  * Capstone_privatesubnet02 (10.0.2.0/24); Availability Zone: us-east-1b
-  * Capstone_publicsubnet03 (10.0.3.0/24); Availability Zone: us-east-1c
-* STEP-02 : Create the Internet Gateway (IGW) : CapstoneIGW.  Attach the VPC (CapstoneVPC) to the CapstoneIGW.
-* STEP-03 : Create the route table - Capstone_mypublicroute and associate it with the CapstoneVPC. Every subnet we create is by default 
-  associated with the main route table. Edit routes in the custom route table to add the route to internet via CapstoneIGW. After this 
-  edit the "subnet associations" and add the public subnets to it.
-* STEP-04 : 
+
+#### Links:
+* https://www.simform.com/use-nodejs-with-react/
+* Rubic Guidelines : https://review.udacity.com/#!/rubrics/2578/view
+
 
 # MICROSERVICES
 * Microservices are an architectural style where an application is composed of modules that can be independently developed and deployed.
@@ -565,9 +618,12 @@ npm i sequelize-typescript@latest --save
     docker push yourdockerhubname/udacity-restapi-feed 
 
 ### IMPORTANT LINKS TO READ
-#### REAL BENEFIT OF MS :https://blog.christianposta.com/microservices/the-real-success-story-of-microservices-architectures/
 #### Kubernetes Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 #### AWS EKS : https://aws.amazon.com/eks/
+#### WHY USE EKS(IMP) : https://itnext.io/kubernetes-is-hard-why-eks-makes-it-easier-for-network-and-security-architects-ea6d8b2ca965
+#### SET UP AWS-IAM AUTH: https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
+#### K8s Introduction: https://kubernetes.io/docs/reference/kubectl/overview/
+#### K8s Cheatsheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 #### DATABASE READS
 * SQL INJECTIONS
 * https://sequelize.org/master/manual/migrations.html#creating-first-seed

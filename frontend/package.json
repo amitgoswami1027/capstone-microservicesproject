@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "udacity-c2-frontend",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -26,12 +26,6 @@
     "@ionic/angular": "^4.1.0",
     "core-js": "^2.5.4",
     "rxjs": "~6.3.3",
-<<<<<<< HEAD
-=======
-    "sequelize": "^5.21.11",
-    "sequelize-typescript": "^1.1.0",
-    "update": "^0.7.4",
->>>>>>> 75591e6b138ab0c122011ffc766974eb26bc474b
     "zone.js": "~0.8.29"
   },
   "devDependencies": {
@@ -39,16 +33,14 @@
     "@angular-devkit/build-angular": "^0.13.9",
     "@angular-devkit/core": "~7.2.3",
     "@angular-devkit/schematics": "~7.2.3",
-    "@angular/cli": "~7.0.3",
+    "@angular/cli": "~7.3.1",
     "@angular/compiler": "~7.2.2",
     "@angular/compiler-cli": "~7.2.2",
     "@angular/language-service": "~7.2.2",
     "@ionic/angular-toolkit": "~1.4.0",
-    "@types/bluebird": "^3.5.32",
-    "@types/express": "^4.17.6",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "^10.12.30",
+    "@types/node": "~10.12.0",
     "codelyzer": "~4.5.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -59,9 +51,8 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "protractor": "~5.4.0",
     "ts-node": "~8.0.0",
-    "ts-node-dev": "^1.0.0-pre.44",
-    "tslint": "^5.12.1",
-    "typescript": "^3.1.6"
+    "tslint": "~5.12.0",
+    "typescript": "~3.1.6"
   },
   "description": "An Ionic project"
 }

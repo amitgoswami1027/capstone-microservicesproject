@@ -45,6 +45,32 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
     </CORSRule>
     </CORSConfiguration>
     ```
+#### Deploying a Kubernetes Cluster with Amazon EKS
+* Step0 : You will need to make sure you have the following components installed and set up before you start with Amazon EKS:
+  * AWS CLI
+  * Kubectl – used for communicating with the cluster API server
+  * AWS-IAM-Authenticator – to allow IAM authentication with the Kubernetes cluster.
+* Step1 : Creating the EKS role and allocating the EKS  AmazonEKSClusterPolicy and  AmazonEKSServicePolicy.
+* Step2 : Creating the VPC for EKS.Ensure you have set to true the enableDnsHostnames and enableDnsSupport fields, otherwise routing to 
+          the API server won’t work.
+* Step3 : Creating EKS Cluster. 
+        * export KUBECONFIG=$KUBECONFIG:~/.kube/config
+        * aws eks --region us-east-1 update-kubeconfig --name CapstoneDeploymentK8Cluster
+        * aws --region us-east-1 eks update-kubeconfig --name CapstoneDeploymentK8Cluster --role-arn 
+          arn:aws:iam::914415844393:role/Capstone-eks-allow
+        * aws eks --region us-east-1 describe-cluster --name CapstoneDeploymentK8Cluster --query cluster.status
+* Step4 : Once the cluster is active, we can proceed with updating our kubeconfig file with the information on the new cluster so 
+          kubectl can communicate with it. To do this, we will use the AWS CLI update-kubeconfig command.
+          * aws eks --region us-east-1 update-kubeconfig --name CapstoneDeploymentK8Cluster
+          * We can now test our configurations using the kubectl get svc command:kubectl get svc
+* Step5 : run kubectl cluster and always get error: You must be logged in to the server (Unauthorized)
+          * Run: aws-iam-authenticator token -i CapstoneDeploymentK8Cluster, it gave me the token and when 
+          * Run: aws-iam-authenticator verify -t token -i CapstoneDeploymentK8Cluster, it also passed.
+          * Output:  &{ARN:arn:aws:iam::914415844393:user/amitgoswami1027 CanonicalARN:arn:aws:iam::914415844393:user/amitgoswami1027 
+                      AccountID:914415844393 UserID:AIDA5JZ3OPQUWQLO43LMM SessionName: AccessKeyID:AKIA5JZ3OPQU5ULB4KVR}
+
+* https://logz.io/blog/amazon-eks-cluster/
+* https://stackoverflow.com/questions/58658615/always-getting-error-you-must-be-logged-in-to-the-server-unauthorized-eks
 * STEP-06 : EKS (AWS-Elastic Kubernetes Service)- Amazon EKS is a managed service that makes it easy for you to use Kubernetes on AWS 
   without needing to install and operate your own Kubernetes control plane. Amazon EKS exposes a Kubernetes API endpoint. Your existing 
   Kubernetes tooling can connect directly to EKS managed control plane. Worker nodes run as EC2 instances in your account.

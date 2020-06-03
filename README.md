@@ -45,9 +45,7 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
     </CORSRule>
     </CORSConfiguration>
     ```
-=============================================
 ### Deploying a Kubernetes Cluster with KOPS 
-=============================================
 Kops (Kubernetes Operations), it’s an open-source free tool which helps us to easily deploy and manage a HA (High Availability) Kubernetes cluster on different cloud providers.
 * Step1 : Create the AWS EC2 Instance and set the development environemnt.
 * Step2 : Configure AWS CLI. And configure AWS account by using command "AWS Configure".
@@ -108,7 +106,7 @@ Kops (Kubernetes Operations), it’s an open-source free tool which helps us to 
  * Step10 : To list nodes : kubectl get nodes
  * Step11 : Kubernetes API and Security Group. The Kubernetes API is by default exposed on the internet. At the end it’s the only way we 
    can easily connect to our cluster (without using VPN connections to our VPC). 
-======================================================================================================================================
+
 ## DEPLOYING THE CAPSTONE PROJECT MICROSERVICES TO THE KUBERNETES CLUSTER CREATED USING KOPS & KUBECTL
 ## Dockerhub Images
 - [The Ionic Client](https://hub.docker.com/repository/docker/amitgoswami1027/capstone-frontend)
@@ -246,5 +244,3 @@ ionic build
 * PASSWORD MISUSE : https://haveibeenpwned.com/
 * JWT : https://jwt.io/
 * https://www.digitalocean.com/community/tutorials/angular-authentication-auth0
-
-

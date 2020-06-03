@@ -226,17 +226,17 @@ Ionic CLI can build the frontend into static HTML/CSS/JavaScript files. These fi
 ionic build
 
 ## Technologies (Important Reads)
-#### Kubernetes Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-#### AWS EKS : https://aws.amazon.com/eks/
-#### WHY USE EKS(IMP) : https://itnext.io/kubernetes-is-hard-why-eks-makes-it-easier-for-network-and-security-architects-ea6d8b2ca965
-#### SET UP AWS-IAM AUTH: https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
-#### K8s Introduction: https://kubernetes.io/docs/reference/kubectl/overview/
-#### K8s Cheatsheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
-#### KUBERNETES LINKS
+* Kubernetes Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+* AWS EKS : https://aws.amazon.com/eks/
+* WHY USE EKS(IMP) : https://itnext.io/kubernetes-is-hard-why-eks-makes-it-easier-for-network-and-security-architects-ea6d8b2ca965
+* SET UP AWS-IAM AUTH: https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
+* K8s Introduction: https://kubernetes.io/docs/reference/kubectl/overview/
+* K8s Cheatsheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+## KUBERNETES LINKS
 * KUBERNETES IS HARD:https://itnext.io/kubernetes-is-hard-why-eks-makes-it-easier-for-network-and-security-architects-ea6d8b2ca965
-#### [Deploying a Kubernetes Cluster with Amazon EKS](https://logz.io/blog/amazon-eks-cluster/).
-#### ttps://www.poeticoding.com/create-a-high-availability-kubernetes-cluster-on-aws-with-kops/
-#### https://eksworkshop.com/spot/cloudformation/kubeconfig/
+* [Deploying a Kubernetes Cluster with Amazon EKS](https://logz.io/blog/amazon-eks-cluster/).
+* ttps://www.poeticoding.com/create-a-high-availability-kubernetes-cluster-on-aws-with-kops/
+* https://eksworkshop.com/spot/cloudformation/kubeconfig/
 #### DATABASE READS
 * SQL INJECTIONS
 * https://sequelize.org/master/manual/migrations.html#creating-first-seed

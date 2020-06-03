@@ -45,6 +45,36 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
     </CORSRule>
     </CORSConfiguration>
     ```
+#### Deploying a Kubernetes Cluster with KOPS - Kops (Kubernetes Operations), it’s an open-source free tool which helps us to easily deploy and manage a HA (High Availability) Kubernetes cluster on different cloud providers.
+* Step1 : Configure AWS CLI. And configure AWS account by using command "AWS Configure".
+* Step2 : Install kops and kubectl. kopsis the tool we need to create the Kubernetes cluster on AWS. kubectl is the cli we use to manage 
+          the cluster once it’s up and running. 
+          ##### Install Kops on Linux
+          ```
+          curl -Lo kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+          chmod +x ./kops
+          sudo mv ./kops /usr/local/bin/
+          ```
+          ##### Install Kubeclt on Linux
+          ```
+          curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+         chmod +x ./kubectl
+         sudo mv ./kubectl /usr/local/bin/kubectl 
+          ```
+* Step3 : Real domain in Route53 : It is now possible to use kops without a real domain. Instead of using a Route53 domain, we can 
+          create a cluster using a subdomain of k8s.local, like chat.k8s.local. A cluster will be created with a load-balancer pointing 
+          to our masters. Kops needs a real domain and valid zone setup into AWS Route53. I know, this can be a blocking step, 
+          especially if you just want to just try kops on AWS. Unfortunately it doesn’t seem to be a way to around this. I’ve personally 
+          changed my "amit-goswami.com" domain nameservers to Route53 time ago. It was super easy. I just had to download the zone file 
+          from GoDaddy and import it into Route53, telling GoDaddy to use the Route53 nameservers.
+  
+  ##### Importing my personal registered domain name "amit-goswami.com" a Zone File from GODADDY.com and cofiguring ROUTE53:
+          * https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating-import.html
+
+* Steps4 : S3 bucket to store the cluster state: We just need to create an S3 bucket which kops will use to save the cluster’s state 
+           files. I’ve called my bucket like a subdomain, state.app.amit-goswami.com
+* Steo5 : Creating the Kubernetes cluster
+
 #### Deploying a Kubernetes Cluster with Amazon EKS
 * Step0 : You will need to make sure you have the following components installed and set up before you start with Amazon EKS:
   * AWS CLI

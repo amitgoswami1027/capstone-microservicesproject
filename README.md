@@ -46,8 +46,16 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
     </CORSConfiguration>
     ```
 #### Deploying a Kubernetes Cluster with KOPS - Kops (Kubernetes Operations), it’s an open-source free tool which helps us to easily deploy and manage a HA (High Availability) Kubernetes cluster on different cloud providers.
-* Step1 : Configure AWS CLI. And configure AWS account by using command "AWS Configure".
-* Step2 : Install kops and kubectl. kopsis the tool we need to create the Kubernetes cluster on AWS. kubectl is the cli we use to manage 
+* Step1 : Create the AWS EC2 Instance and set the development environemnt.
+* Step2 : Configure AWS CLI. And configure AWS account by using command "AWS Configure".
+ ```
+ curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip
+ apt install unzip python
+ unzip awscli-bundle.zip
+ #sudo apt-get install unzip - if you dont have unzip in your system
+ ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+ ```
+* Step3 : Install kops and kubectl. kopsis the tool we need to create the Kubernetes cluster on AWS. kubectl is the cli we use to manage 
           the cluster once it’s up and running. 
           ##### Install Kops on Linux
           ```
@@ -61,7 +69,9 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
          chmod +x ./kubectl
          sudo mv ./kubectl /usr/local/bin/kubectl 
           ```
-* Step3 : Real domain in Route53 : It is now possible to use kops without a real domain. Instead of using a Route53 domain, we can 
+* Step4 : Create an IAM user/role with Route53, EC2, IAM and S3 full access.
+* Step5 : Create a Route53 private hosted zone (you can create Public hosted zone if you have a domain)
+          Real domain in Route53 : It is now possible to use kops without a real domain. Instead of using a Route53 domain, we can 
           create a cluster using a subdomain of k8s.local, like chat.k8s.local. A cluster will be created with a load-balancer pointing 
           to our masters. Kops needs a real domain and valid zone setup into AWS Route53. I know, this can be a blocking step, 
           especially if you just want to just try kops on AWS. Unfortunately it doesn’t seem to be a way to around this. I’ve personally 
@@ -71,9 +81,34 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
   ##### Importing my personal registered domain name "amit-goswami.com" a Zone File from GODADDY.com and cofiguring ROUTE53:
           * https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating-import.html
 
-* Steps4 : S3 bucket to store the cluster state: We just need to create an S3 bucket which kops will use to save the cluster’s state 
-           files. I’ve called my bucket like a subdomain, state.app.amit-goswami.com
-* Steo5 : Creating the Kubernetes cluster
+* Step6 : Create an S3 bucket : S3 bucket to store the cluster state: We just need to create an S3 bucket which kops will use to save 
+           the cluster’s state files. I’ve called my bucket like a subdomain, state.app.amit-goswami.com
+* Step7 : Creating the Kubernetes cluster using KOPS (Create kubernetes cluster definitions on S3 bucket)
+          * Existing VPC and Internet Gateway will be re-used : Use kops create cluster with the --subnets argument for your existing 
+            subnets:
+          * Create ssh key to login into servers. #ssh-keygen -f .ssh/id_rsa
+          
+          ```
+           export KOPS_STATE_STORE=s3://state.app.amit-goswami.com
+           export CLUSTER_NAME=capstone.amit-goswami.com
+           export VPC_ID=vpc-01a5884a775b4a474 # replace with your VPC id
+           export NETWORK_CIDR=10.0.0.0/16 # replace with the cidr for the VPC ${VPC_ID}
+           export SUBNET_ID=subnet-0b683542993fc8e8a # replace with your subnet id
+           export SUBNET_CIDR=10.0.1.0/24 # replace with your subnet CIDR
+           export SUBNET_IDS=subnet-0c6468c90331aa4dd,subnet-0b683542993fc8e8a # replace with your comma separated subnet ids
+
+           kops create cluster --zones=us-east-1a,us-east-1c --name=${CLUSTER_NAME} --vpc=${VPC_ID} --subnets=${SUBNET_IDS} --master-count 3 --master-size=m3.medium --node-count 2 --node-size=t2.medium --ssh-public-key=~/.ssh/id_rsa.pub --dns-zone=amit-goswami.com --dns private --yes
+          
+          ```
+ * Step8 : Create kubernetes cluser : kops update cluster capstone.amit-goswami.com --yes 
+ * Step9 : Validate the cluster : kops validate cluster --state "s3://state.app.amit-goswami.com" --name capstone.amit-goswami.com
+          * validate cluster: kops validate cluster
+          * list nodes: kubectl get nodes --show-labels
+          * ssh to the master: ssh -i ~/.ssh/id_rsa admin@api.capstone.amit-goswami.com
+          * the admin user is specific to Debian. If not using Debian please use the appropriate user based on your OS.
+          * read about installing addons at: https://github.com/kubernetes/kops/blob/master/docs/operations/addons.md.
+ * Step10 : To list nodes : kubectl get nodes
+
 
 #### Deploying a Kubernetes Cluster with Amazon EKS
 * Step0 : You will need to make sure you have the following components installed and set up before you start with Amazon EKS:

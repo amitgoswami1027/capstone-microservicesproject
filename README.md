@@ -2,7 +2,7 @@
 
 ### Overview : The purpose of the cloud developer capstone project is to give you a chance to combine what you've learned throughout the program. This project will be an important part of your portfolio that will help you achieve your Cloud-related career goals.
 
-### PROJECT PROPOSAL(SCOPE): Capstone Project is a cloud application developed for Udacity Cloud Engineering Nanodegree. It allows users to register and log into a web client, post photos to the feed, and process photos using an image filtering microservice. I will be using the AWS for deploying the microservices project. Will be using IAM, S3, RDS-Postgres, VPC, Subnets, Internet Gatway(IGW), EC2, ELB, Dockers, EKS -Elastic kubernetes services to deploy the microservices on AWS Cloud.
+### PROJECT PROPOSAL(SCOPE): Capstone Project is a cloud application developed for Udacity Cloud Engineering Nanodegree. It allows users to register and log into a web client, post photos to the feed, and process photos using an image filtering microservice. I will be using the AWS for deploying the microservices project. Will be using IAM, S3, RDS-Postgres, VPC, Subnets, Internet Gatway(IGW), EC2, ELB, Dockers,Kubectl using KOPS to deploy the microservices on AWS Cloud.
 
 The project is split into four services:
 1. [The Ionic Client](./frontend/)- Ionic client web application which consumes the RestAPI Backend.
@@ -123,13 +123,10 @@ Kops (Kubernetes Operations), it’s an open-source free tool which helps us to 
 ```shell
 docker-compose -f docker-compose-build.yaml build --parallel
 ```
-
 - To start the system, run a container for each of our defined services, in the de-attached mode:
-
 ```shell
 docker-compose -f docker-compose up -d
 ```
-
 - To see the list of running containers, run the command - `docker-compose ps`. You will see a list of container names, states, and ports listed.
 
 - If you wish to stop the containers gracefully, use the below command:
@@ -184,10 +181,8 @@ KUBERNETES SERVICES: Abstraction of pods and their interfaces
 
 ![](images/label.png)
 
-
 ## Getting Setup
-
-> _tip_: this frontend is designed to work with the RestAPI backends). It is recommended you stand up the backend first, test using Postman, and then the frontend should integrate.
+ Frontend is designed to work with the RestAPI backends). It is recommended you stand up the backend first, test using Postman, and then the frontend should integrate.
 
 ### Installing Node and NPM
 This project depends on Nodejs and Node Package Manager (NPM). Before continuing, you must download and install Node (NPM is included) from [https://nodejs.com/en/download](https://nodejs.org/en/download/).
@@ -196,7 +191,6 @@ This project depends on Nodejs and Node Package Manager (NPM). Before continuing
 The Ionic Command Line Interface is required to serve and build the frontend. Instructions for installing the CLI can be found in the [Ionic Framework Docs](https://ionicframework.com/docs/installation/cli).
 
 ### Installing project dependencies
-
 This project uses NPM to manage software dependencies. NPM Relies on the package.json file located in the root of this repository. After cloning, open your terminal and run:
 ```bash
 npm install
@@ -209,7 +203,6 @@ You'll need to create a new node server. Open a new terminal within the project 
 2. Install express: `npm i express --save`
 3. Install typescript dependencies: `npm i ts-node-dev tslint typescript  @types/bluebird @types/express @types/node --save-dev`
 4. Look at the `package.json` file from the RestAPI repo and copy the `scripts` block into the auto-generated `package.json` in this project. This will allow you to use shorthand commands like `npm run dev`
-
 
 ### Configure The Backend Endpoint
 Ionic uses enviornment files located in `./src/enviornments/enviornment.*.ts` to load configuration variables at runtime. By default `environment.ts` is used for development and `enviornment.prod.ts` is used for produciton. The `apiHost` variable should be set to your server url either locally or in the cloud.

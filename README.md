@@ -45,7 +45,8 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
     </CORSRule>
     </CORSConfiguration>
     ```
-#### Deploying a Kubernetes Cluster with KOPS - Kops (Kubernetes Operations), it’s an open-source free tool which helps us to easily deploy and manage a HA (High Availability) Kubernetes cluster on different cloud providers.
+### Deploying a Kubernetes Cluster with KOPS 
+Kops (Kubernetes Operations), it’s an open-source free tool which helps us to easily deploy and manage a HA (High Availability) Kubernetes cluster on different cloud providers.
 * Step1 : Create the AWS EC2 Instance and set the development environemnt.
 * Step2 : Configure AWS CLI. And configure AWS account by using command "AWS Configure".
  ```
@@ -58,17 +59,17 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
 * Step3 : Install kops and kubectl. kopsis the tool we need to create the Kubernetes cluster on AWS. kubectl is the cli we use to manage 
           the cluster once it’s up and running. 
           ##### Install Kops on Linux
-          ```
+  ```
           curl -Lo kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
           chmod +x ./kops
           sudo mv ./kops /usr/local/bin/
-          ```
+  ```
           ##### Install Kubeclt on Linux
-          ```
+  ```
           curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
          chmod +x ./kubectl
          sudo mv ./kubectl /usr/local/bin/kubectl 
-          ```
+  ```
 * Step4 : Create an IAM user/role with Route53, EC2, IAM and S3 full access.
 * Step5 : Create a Route53 private hosted zone (you can create Public hosted zone if you have a domain)
           Real domain in Route53 : It is now possible to use kops without a real domain. Instead of using a Route53 domain, we can 
@@ -101,368 +102,72 @@ Here goes the AWS deployment diagram and will be replicating the same for the pr
           
           ```
  * Step8 : Create kubernetes cluser : kops update cluster capstone.amit-goswami.com --yes 
- * Step9 : Validate the cluster : kops validate cluster --state "s3://state.app.amit-goswami.com" --name capstone.amit-goswami.com
-          * validate cluster: kops validate cluster
-          * list nodes: kubectl get nodes --show-labels
-          * ssh to the master: ssh -i ~/.ssh/id_rsa admin@api.capstone.amit-goswami.com
-          * the admin user is specific to Debian. If not using Debian please use the appropriate user based on your OS.
-          * read about installing addons at: https://github.com/kubernetes/kops/blob/master/docs/operations/addons.md.
+ * Step9 : Validate the cluster : kops validate cluster --state "s3://state.app.amit-goswami.com" --name capstone.amit-goswami.com       
  * Step10 : To list nodes : kubectl get nodes
+ * Step11 : Kubernetes API and Security Group. The Kubernetes API is by default exposed on the internet. At the end it’s the only way we 
+   can easily connect to our cluster (without using VPN connections to our VPC). 
 
+## DEPLOYING THE CAPSTONE PROJECT MICROSERVICES TO THE KUBERNETES CLUSTER CREATED USING KOPS & KUBECTL
+## Dockerhub Images
+- [The Ionic Client](https://hub.docker.com/repository/docker/amitgoswami1027/capstone-frontend)
+- [The Feed RESTful API](https://hub.docker.com/repository/docker/amitgoswami1027/capstone-restapi-feedv2)
+- [The User RESTful API](https://hub.docker.com/repository/docker/amitgoswami1027/capstone-restapi-userv2)
+- [The Image Filtering RESTful API](https://hub.docker.com/repository/docker/amitgoswami1027/capstone-restapi-image)
+- [The Nginx Reverse Proxy](https://hub.docker.com/repository/docker/amitgoswami1027/capstone-reverseproxyv2)
 
-#### Deploying a Kubernetes Cluster with Amazon EKS
-* Step0 : You will need to make sure you have the following components installed and set up before you start with Amazon EKS:
-  * AWS CLI
-  * Kubectl – used for communicating with the cluster API server
-  * AWS-IAM-Authenticator – to allow IAM authentication with the Kubernetes cluster.
-* Step1 : Creating the EKS role and allocating the EKS  AmazonEKSClusterPolicy and  AmazonEKSServicePolicy.
-* Step2 : Creating the VPC for EKS.Ensure you have set to true the enableDnsHostnames and enableDnsSupport fields, otherwise routing to 
-          the API server won’t work.
-* Step3 : Creating EKS Cluster. 
-        * export KUBECONFIG=$KUBECONFIG:~/.kube/config
-        * aws eks --region us-east-1 update-kubeconfig --name CapstoneDeploymentK8Cluster
-        * aws --region us-east-1 eks update-kubeconfig --name CapstoneDeploymentK8Cluster --role-arn 
-          arn:aws:iam::914415844393:role/Capstone-eks-allow
-        * aws eks --region us-east-1 describe-cluster --name CapstoneDeploymentK8Cluster --query cluster.status
-* Step4 : Once the cluster is active, we can proceed with updating our kubeconfig file with the information on the new cluster so 
-          kubectl can communicate with it. To do this, we will use the AWS CLI update-kubeconfig command.
-          * aws eks --region us-east-1 update-kubeconfig --name CapstoneDeploymentK8Cluster
-          * We can now test our configurations using the kubectl get svc command:kubectl get svc
-* Step5 : run kubectl cluster and always get error: You must be logged in to the server (Unauthorized)
-          * Run: aws-iam-authenticator token -i CapstoneDeploymentK8Cluster, it gave me the token and when 
-          * Run: aws-iam-authenticator verify -t token -i CapstoneDeploymentK8Cluster, it also passed.
-          * Output:  &{ARN:arn:aws:iam::914415844393:user/amitgoswami1027 CanonicalARN:arn:aws:iam::914415844393:user/amitgoswami1027 
-                      AccountID:914415844393 UserID:AIDA5JZ3OPQUWQLO43LMM SessionName: AccessKeyID:AKIA5JZ3OPQU5ULB4KVR}
+## Starting the services as Docker containers locally
+- Since the `docker-compose` file uses environment variables, therefore you need to tell the system to use the environment variables from your `~/.profile` file using the command source `~/.profile`.
 
-* https://logz.io/blog/amazon-eks-cluster/
-* https://stackoverflow.com/questions/58658615/always-getting-error-you-must-be-logged-in-to-the-server-unauthorized-eks
-* STEP-06 : EKS (AWS-Elastic Kubernetes Service)- Amazon EKS is a managed service that makes it easy for you to use Kubernetes on AWS 
-  without needing to install and operate your own Kubernetes control plane. Amazon EKS exposes a Kubernetes API endpoint. Your existing 
-  Kubernetes tooling can connect directly to EKS managed control plane. Worker nodes run as EC2 instances in your account.
-  * Creating an EKS Cluster
-     * Create cluster in EKS
-     * Create and specify role for Kubernetes cluster
-     * Enable public access
-  * Creating a Node Group
-     * Add Node Group in the newly-created cluster
-     * Create and specify role for IAM role for node group
-     * Create and specify SSH key for node group
-     * Set instance type to t3.micro for cost-savings as we learn how to use Kubernetes
-     * Specify desired number of nodes
-* STEP-07 : At this point, we have setup Kubernetes cluster and created YAML files for deployment of pods and services. Now need to 
-  configure Kubernetes command-line tool - kubectl, to interact with our cluster.
-  * Interacting With Your Cluster
-    * A: Install kubectl on Linux - [Done]
-      * 1. Download the latest release with the command: curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
-      * 2. To download a specific version, replace the : curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
-      * 3. For example, to download version v1.18.0 on Linux, type: curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
-      * 4. Make the kubectl binary executable; chmod +x ./kubectl
-      * 5. Move the binary in to your PATH; sudo mv ./kubectl /usr/local/bin/kubectl
-      * 6. Test to ensure the version you installed is up-to-date: kubectl version --client https://github.com/kubermatic/kubeone/blob/master/docs/quickstart-aws.md
-    * B: Set up aws-iam-authenticator : Amazon EKS uses IAM to provide authentication to  Kubernetes cluster through the AWS IAM 
-         authenticator for Kubernetes.
-      * 1. Download the Amazon EKS-vended aws-iam-authenticator binary from Amazon S3; curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
-      * 2. Apply execute permissions to the binary; chmod +x ./aws-iam-authenticator
-      * 3. Copy the binary to a folder in your $PATH. We recommend creating a $HOME/bin/aws-iam-authenticator and ensuring that 
-           $HOME/bin comes first in your $PATH;  mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
-      * 4. Add $HOME/bin to your PATH environment variable; echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-      * 5. Test that the aws-iam-authenticator binary works; aws-iam-authenticator help
-    * C: Set up kubeconfig : Amazon EKS uses the aws eks get-token command, available in version 1.16.156 or later of the AWS CLI or the 
-         AWS IAM Authenticator for Kubernetes with kubectl for cluster authentication. 
-* STEP-08 : Command: sudo aws eks --region us-east-1 update-kubeconfig --name CapstoneDeploymentK8Cluster 
-  Above command takes the EKS kubernetes cluster and bind it to the kubectl command. Kubeclt command is used to intract with the 
-  cluster.
-* STEP-09 : Some kubectl command to intract with the EKS Cluster.
-  * kubectl get pods - show the pods in the cluster
-  * kubectl describe services - show the services in the cluster
-  * kubectl cluster-info - display information about the cluster
-  * kubectl apply -f deployment.yaml
+- Navigate to [deployment/docker folder](./deployment/docker/) and build the images for each of our defined services, using the following command::
 
+```shell
+docker-compose -f docker-compose-build.yaml build --parallel
+```
 
-https://eksworkshop.com/spot/cloudformation/kubeconfig/
+- To start the system, run a container for each of our defined services, in the de-attached mode:
+
+```shell
+docker-compose -f docker-compose up -d
+```
+
+- To see the list of running containers, run the command - `docker-compose ps`. You will see a list of container names, states, and ports listed.
+
+- If you wish to stop the containers gracefully, use the below command:
+
+```shell
+docker-compose stop
+# To remove (and stop) the container
+docker-compose down
+```
+
+## Starting the app as a Kubernetes cluster locally
+- To create K8s ***configMap***, ***secrets***, ***deployments*** and ***services*** use the below command:
+
+```shell
+kubectl apply -f udacity-c3-deployment/k8s --recursive
+```
+- Use Kubernetes port forwarding to see the application running, using the following command:
+
+```shell
+kubectl port-forward <reverseproxy-pod> 8080:8080
+kubectl port-forward <frontend-pod> 8100:80
+```
+
+- Go to the browser and run [http://localhost:8100/](http://localhost:8100/) to see my Udagram application up and running.
+
+## Links
+- [REST API server](http://a4328ed99607011eaaa110ae3011d93e-707550298.us-east-1.elb.amazonaws.com:8080/api/v0).
+- [Ionic client](http://a438417d2607011eaaa110ae3011d93e-1338661806.us-east-1.elb.amazonaws.com:8100).
+
+***Note***: You can find screenshots for the deployment [here](./screenshots/).
+
 CONTAINERS: Abstraction of an application and its dependencies 
 KUBERNETES PODS: Abstraction of multiple containers
 KUBERNETES SERVICES: Abstraction of pods and their interfaces
 
-### AWS EKS (Elastic Kubernetes Service)
-* AWS EKS is a service that we can use to set up Kubernetes.
-* The deployment.yaml file is used to specify how our pods should be created.
-* The service.yaml file is used to specify how our pods are exposed.
-* Kubernetes Service:An abstraction of a set of pods and interface for how to interact with the pods.
-* Pods : 	A set of containers that are deployed together
-
-### KUBERNETES LINKS
-* KUBERNETES IS HARD:https://itnext.io/kubernetes-is-hard-why-eks-makes-it-easier-for-network-and-security-architects-ea6d8b2ca965
-
-Loading via dependencies
-# installation with npm
-npm install --save @auth0/auth0-spa-js
-
-# installation with yarn
-yarn add @auth0/auth0-spa-js
-
-Once auth0-spa-js is installed, reference it using an import statement (if you're using a build system such as Webpack):
-
-import createAuth0Client from '@auth0/auth0-spa-js';
-
-
 #### Links:
 * https://www.simform.com/use-nodejs-with-react/
 * Rubic Guidelines : https://review.udacity.com/#!/rubrics/2578/view
-
-
-# MICROSERVICES
-* Microservices are an architectural style where an application is composed of modules that can be independently developed and deployed.
-* In monoliths,all the components of the application are built into a single application.
-* Microservice Benefits - Scale,Development in Parallel,Cost Effectiveness and Flexibility.
-* Microservices dont solve everything, every decision in architecture is evaluating the "trade-offs". Over heard of using the MS is more complex and need to evaluate the need for the same. We need to setup the individual deployment process for all the MS and its a lot of time and its important to do the right evaluation. 
-* Properties of MS: Communication,Independently Deployed,Fault tolerant.
-* REST - Architectural style of communication across a network. Alternatives to REST : While REST is the most popular form of network communication used for microservices, there are many other protocols that can be used. The following are some other ways microservices can communicate with one another: Publish-Subscribe, Queues, gRPC,SOAP and GraphQL.
-
-### MONOLITH TO MICROSERVICES
-#### Map Your Dependencies
-  * It's important to understand the application you're working with before breaking it apart.
-  * One strategy is to map out the modules and their dependencies as a directed graph to understand the downstream impact of 
-    your changes
-#### Where to Start?
-  * There’s no hard rule: choose the part of the application that makes the most sense to you.
-  * Dependency graph serves merely as a guideline on risk based on the number of dependencies.
-  * A module with the least dependencies will potentially have the downstream effects meaning less risk.
-#### How to Start?
-  * The Strangler pattern(Strategy of refactoring code by incrementally replacing components of the codebase) is a common and 
-    effective way to migrate legacy applications.
-  * Rather than replacing your code with a new version, you can gradually replace components of your application.
-#### Shared Code
-  * Code duplication can be abstracted into common libraries used across projects.
-#### Links
-  * https://docs.microsoft.com/en-us/azure/architecture/patterns/strangler
-  * https://en.wikipedia.org/wiki/Dependency_graph
-  * https://www.martinfowler.com/books/refactoringDatabases.html
-  
-### DOCKERS
-  * Docker is a platform that helps us manage the process of creating and managing our containers.
-  * DOCKER IMAGE : When we have an application that we want to deploy, we can package it into a Docker Image. The image 
-    contains all of your code and dependencies. 
-  * DOCKER CONTAINER : A Docker Container is an ephemeral running instance of a Docker Image.
-  * Dockerfile : A Dockerfile defines the steps to create a Docker Image.
-  * DOCKER COMMANDS : https://docs.docker.com/engine/reference/commandline/inspect/
-  * DOCKER REGISTERY : https://docs.docker.com/registry/
-  * BEST PRACTICES : https://cloud.google.com/cloud-build/docs/speeding-up-builds.
-  * We can connect to Docker containers using docker-exec -it shand run commands directly in the container.
-  * https://www.docker.com/blog/live-debugging-docker/
-  * https://docs.travis-ci.com/user/best-practices-security/
- 
-### Dockerfile (Basics) 
-a text file without any extension that contains all the commands to be executed to generate an image.
-#### FROM (a Dockerfile must begin with a FROM instruction . initializes a new build stage sets the base image for subsequent instructions)
-#### RUN (command to create and start containers using the current image commits the results so that the resulting committed image will be used for the next step in the Dockerfile.)
-#### WORKDIR (creates (if not exists) and set the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that follow it in the Dockerfile.)
-#### COPY(copies new files or directories from <src> and adds them to the filesystem of the container at the path <dest>)
-#### EXPOSE (specify the network ports of the container at runtime specify the network protocol that the port listens (TCP is the default) NOTE: EXPOSE does not actually publish the port -- it functions more as a documentation tool
-#### CMD (provide defaults for an executing container if the defaults do not include an executable, you must specify an ENTRYPOINT
-NOTE: there can be only one CMD instruction in a Dockerfile)
-
-## What is DevOps?
-DevOps is the combination of industry best practices, and set of tools that improves an organization’s ability to:
-* Increase the speed of software delivery.
-* Increases the speed of software evolution.
-* Have better reliability of the software.
-* Have scalability using automation.
-* Improved collaboration among teams.
-
-### Continuous Integration/ Continuous Deployment
-  * Process in which code is tested, built into a Docker image, and deployed to a container registry. Process in which our 
-    Docker image is deployed to containers.
-  * Additional Benefits : By streamlining our build and deploy to an automated process, developers are provided the least 
-    privilege that they need to write their code. 
-  * ART OF SHIPPING EARLY & OFTEN : https://blog.ycombinator.com/tips-ship-early-and-often/
- 
-#### Continuous Integration means newly developed code changes of a project are regularly built, tested, and merged to a shared repository like git.
-#### Continuous Delivery is the process of automating the release of the merged and validated code to a repository and finally release a production-ready build to the production environment.
-
-# KUBERNETES( K8s) - Installation on AWS EC2 Instance
-Kubernetes (K8s) is an Apache 2.0-licensed open source Container Orchestration tool for effectively managing containerized applications.Kubernetes can automate the deployments, maintaining a logical group of containers, and helps to scale the application services. Google started it, but many other companies like Docker, Red Hat, and VMware contributed to it. In 2016, Google transferred the IP rights to Cloud Native Computing Foundation(CNCF. 
-
-## Why do we need Kubernetes?
-![](images/kube01.png)
-
-The above image shows the containerized applications have the advantage of being lightweight and more comfortable to manage, as compared to Virtual Machine (VM) based deployment.  Kubernetes can help in managing containerized application in the following ways:
-* Manage Containers - Self-healing such as auto-restart of a backup/replica container in case of a failure, automate the rollouts and rollbacks, configuration management of containers
-* Autoscale Workloads and Load balancing - Distributing a load of network traffic to suitable container/node
-* Optimal Resource Utilization - Each container has its own resource (CPU and memory) requirements. Kubernetes fits a container to the 
- most suitable Node so that the resources of the Node are utilized effectively.
-* Service Discovery - Provide native methods for service discovery
-* Storage orchestration - Automatically mounting the volumes to containers
-* Others - Fire off jobs and scheduled cronjobs, quickly integrate and support 3rd party apps, and manage Stateless and Stateful applications
-
-## How does Kubernetes work?
-A Kubernetes deployment follows the “Master-Worker” model. We need to understand the key components before we look into the architecture diagram.
-
-* Node - A physical or virtual machine that runs multiple containers belonging to an application.
-* Cluster - A set of Master and Worker Nodes. When we deploy Kubernetes, we get a cluster, which each cluster has a minimum of one worker node. A master node is capable of managing multiple worker nodes.
-* Master Node - A node that decides the pod scheduling, and pod replication. The main components of a master node are - “kube-api-server”, “kube-scheduler”, “kube-controller”.
-* Worker Node - A node on which pods are scheduled and run.
-* Pod - A group of tightly coupled containers with shared storage, network, and a specification for how to run the containers. All the containers in a Pod are co-located and co-scheduled. The worker node(s) hosts the pods.
-
-![](images/kube02.png)
-
-In the above diagram, the following elements are involved:
-* kubelet - a “node agent” using which the worker node communicates with the master node. The kubelet runs on each Node.
-* kube-proxy - a “node agent” using which the worker node communicates with the external world. The kube-proxy also runs on each Node.
-* kube-apiserver - the frontend API that exposes the Kubernetes control plane.
-* etcd - a key-value store to stores the cluster state
-* kube-scheduler - a component that schedules the pods for running on the most suitable Node.
-* kube-controller-manager - a component that bundles and runs controller processes. These processes concern the nodes, replication,  
- endpoints, and access management.
-
-### What is POD?
-A pod is a "logical-grouping" of tightly coupled containers (one or more) that have shared storage, a network, and a standard specification. The worker node(s) hosts one or more pods at a time. The image below shows a pod having two containers running in a host.
-
-![](images/pod.png)
-
-The set of containers within a pod have the following essential characteristics:
-1. Share the same namespace (IP address and ports), storage, and network.
-2. Can communicate within the set using localhost
-3. Will always be scheduled together to run on a host node as a single entity * (co-scheduled) & (co-located). If a container is shut 
-   down/added/removed, then the pod has to "restart". Here, the "pod restart" means to restart the environment the containers run in.
-4. Run a single instance of the containerized application. 
-
-* [Controller] : A Controller helps to manage multiple pods each running an individual instance of the application.
-Assume there are multiple pods, each running an individual instance of the application. Such a set of identical pods is called ReplicaSet. The ReplicaSet (of pods) ensures the high-availability of the services hosted inside them. ReplicaSets are created and managed by Controller.
-
-The Controller specifies the necessary attributes and state of Pods and ReplicaSets in a .yaml configuration file, which is called Deployment. This configuration file provides declarative updates to manage Pods and ReplicaSets. The Controller can manage the situations, such as when the host (worker-node) fails, or the pod scheduling is interrupted, using the "Deployment" configuration file. In such cases, the Controller automatically replaces the pod by scheduling an identical replacement on a different node.
-
-* [Pod Templates]: The Controller uses another .yaml configuration file called "Pod Template". It contains the pod specifications such as name, count of replicas, containers to run, port, and many other details.
-
-### Kubeone installation [https://github.com/kubermatic/kubeone] - [Done]
-1. It is recommended to use KubeOne for Linux users. kubeone is a CLI tool and a Go library for installing, managing, and upgrading 
-   Kubernetes High-Available (HA) clusters. It can be used on any cloud provider, on-prem or bare-metal cluster.
-
-### Task-01: Downloading a binary from GitHub Releases - [Done]
-    *  curl -LO https://github.com/kubermatic/kubeone/releases/download/v<version>/kubeone_<version>_<operating_system>_amd64.zip
-    *  Find the releases from : [https://github.com/kubermatic/kubeone/releases]
-    *  Example: "curl -LO https://github.com/kubermatic/kubeone/releases/download/v0.11.1/kubeone_0.11.1_linux_amd64.zip"
-2. Extract the binary to the KubeOne directory. On Linux and macOS, you can use unzip.
-    * "unzip kubeone_<version>_<operating_system>_amd64.zip -d kubeone_<version>_<operating_system>_amd64"
-    *  Example : "unzip kubeone_0.11.1_linux_amd64.zip -d kubeone_0.11.1_linux_amd64"
-3. Move the kubeone binary to your path, so you can easily invoke it from your terminal.
-    * "sudo mv kubeone_<version>_<operating_system>_amd64/kubeone /usr/local/bin"
-    *  Example : "sudo mv kubeone_0.11.1_linux_amd64/kubeone /usr/local/bin"
-4. Kubeone installation done
-
-### Task-02: Terraform Instalaltion - [Done]
-5. Home Brew : [/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"]
-   brew install terraform
-   Set brew to PATH
-   brew install gcc
-6. For compilers to find isl@0.18 you may need to set:
-   * export LDFLAGS="-L/home/linuxbrew/.linuxbrew/opt/isl@0.18/lib"
-   * export CPPFLAGS="-I/home/linuxbrew/.linuxbrew/opt/isl@0.18/include"
-   For pkg-config to find isl@0.18 you may need to set:
-   * export PKG_CONFIG_PATH="/home/linuxbrew/.linuxbrew/opt/isl@0.18/lib/pkgconfig"
-7. Install Terraform (terraform Successfully Installed)
-   brew install terraform
-   Go to kubeone_0.11.1_linux_amd64/examples/terraform/aws
-   terraform init
-9. AWS Credentials: 
-   export AWS_ACCESS_KEY_ID=
-   export AWS_SECRET_ACCESS_KEY=
-
-### Task-03: Install kubectl on Linux - [Done]
-1. Download the latest release with the command:
-   curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
-2. To download a specific version, replace the
-   curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
-3. For example, to download version v1.18.0 on Linux, type:
-   curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
-4. Make the kubectl binary executable.
-   chmod +x ./kubectl
-5. Move the binary in to your PATH.
-   sudo mv ./kubectl /usr/local/bin/kubectl
-6. Test to ensure the version you installed is up-to-date:
-   kubectl version --client
-   https://github.com/kubermatic/kubeone/blob/master/docs/quickstart-aws.md
-
-### Task-04: One we install KubeOne and Kubectl on the AWS EC2 instance,do the following steps: 
-1. Setup Credentials - Create IAM account and store the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables in your AWS 
-   EC2 instance
-2. Create Infrastructure - Associate the required compute resources to create the Kubernetes cluster.
-3. Install Kubernetes Upon successful installation, run kubectl get nodes command. 
-
-## Task-05 Setting Up a Kubernetes Cluster on AWS in 5 Minutes
-### (I was facing some challanges while installing kubectl" using kubeone. Instead I am using KOPS to install kubeclt on AWS EC2 instance). Here goes the steps to do the same.....
-
-Kubernetes is like magic. It is a system for working with containerized applications: deployment, scaling, management, service discovery, magic. Think Docker at scale with little hassle. 
-
-### Step-01 : Before setting up the Kubernetes cluster, you’ll need an AWS account and an installation of the AWS Command Line Interface. "aws configure"
-Install Home Brew : /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
- echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> /home/ec2-user/.bash_profile
-### Step-02 : Installing kops + kubectl
- * brew update && brew install kops kubectl
-### Step-03 : Setting Up the Kubernetes Cluster
- *  The first thing we need to do is create an S3 bucket for kops to use to store the state of the Kubernetes cluster and its 
-    configuration. We’ll use the bucket name udagram-kops-goswami-store
-    * sudo aws s3api create-bucket --bucket udagram-kops-goswami-store --region us-east-1
- *  After creating the udagram-kops-goswami-store, let’s enable versioning to revert or recover a previous state store.
-    * sudo aws s3api put-bucket-versioning --bucket udagram-kops-goswami-store --versioning-configuration Status=Enabled
- *  Before creating the cluster, let’s set two environment variables: KOPS_CLUSTER_NAME and KOPS_STATE_STORE. For safe keeping you 
-    should add the following to your ~/.bash_profile
-    * export KOPS_CLUSTER_NAME=udagram-kops-goswami-store.k8s.local
-    * export KOPS_STATE_STORE=s3://udagram-kops-goswami-store
- *  You don’t HAVE TO set the environment variables, but they are useful and referenced by kops commands. For example, see kops create 
-    cluster --help. If the the Kubernetes cluster name ends with k8s.local, Kubernetes will create a gossip-based cluster.
- *  Now, to generate the cluster configuration:
-    * kops create cluster --node-count=2 --node-size=t2.medium --zones=us-east-1a
- *  kops create secret --name udagram-kops-goswami-store.k8s.local sshpublickey admin -i ~/.ssh/authorized_keys
- *  kops create cluster --node-count=2 --node-size=t2.medium --zones=us-east-1a --name udagram-cluster
- *  Time to build the cluster. This takes a few minutes to boot the EC2 instances and download the Kubernetes components.
-    * kops update cluster --name ${KOPS_CLUSTER_NAME} --yes
- *  After waiting a bit, let’s validate the cluster to ensure the master + 2 nodes have launched.
-    * kops validate cluster
- *  Finally, you can see your Kubernetes nodes with kubectl:
-    * kubectl get nodes
- *  kubectl cluster-info
- *  With this hostname, open your browser to https://api-udagram-kops-goswami-store-k8s-local-71cb48-202595039.us-east-1.elb.amazonaws.com/ui. (You’ll need to replace the hostname with yours).
- *  Alternatively, you can access the Dashboard UI via a proxy:
-    * kubectl proxy
- *  Delete the Kubernetes Cluster
-    kops delete cluster --name ${KOPS_CLUSTER_NAME} --yes
- #### [https://ramhiser.com/post/2018-05-20-setting-up-a-kubernetes-cluster-on-aws-in-5-minutes/]
-
-Suggestions:
- * validate cluster: kops validate cluster
- * list nodes: kubectl get nodes --show-labels
- * ssh to the master: ssh -i ~/.ssh/id_rsa admin@api.udagram-kops-goswami.k8s.local
- * the admin user is specific to Debian. If not using Debian please use the appropriate user based on your OS.
- * read about installing addons at: https://github.com/kubernetes/kops/blob/master/docs/operations/addons.md.
-https://github.com/makinwab/microservice-project-udacity
-
-## Task-06 Kubernetes dashboard.
-Kubernetes Dashboard is a general purpose, web-based UI for Kubernetes clusters. It allows users to manage applications running in the cluster and troubleshoot them, as well as manage the cluster itself.
-* To deploy Dashboard, execute following command:
-  * kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc7/aio/deploy/recommended.yaml
-* kubectl proxy 
-
-### K8s Deployments
-Controller specifies the necessary attributes and state of Pods and ReplicaSets in a .yaml configuration file, which is called Deployment. This configuration file provides declarative updates to create and manage Pods / ReplicaSets. We define a Deployment to:
-1. Create new Pods or ReplicaSets
-2. delete the existing Deployments, thereby releasing the compute resources occupied by them
-
-A Deployment contains the details about the containers that would comprise the Pods / ReplicaSets. The figure below shows a sample deployment file in which “kind”, “replicas”, “image”, and “labels” fields are highlighted.
-
-### K8s Deployment template
-![](images/deployment.png)
-
-### K8s Deployment Flow
-![](images/flow.png)
-
-![](images/newversions.png)
-
-### K8s Rolling Update
-![](images/rollyupdate.png)
-
-### K8s Deployment must read
-[https://kubernetes.io/docs/concepts/workloads/controllers/deployment/]
 
 ### Deployment Configuration Files
 * kubectl apply -f backend-feed-deployment.yaml 
@@ -479,50 +184,6 @@ A Deployment contains the details about the containers that would comprise the P
 
 ![](images/label.png)
 
-### AWS EKS (Elastic Kubernetes Service) - Must Read.
-* EKS [https://aws.amazon.com/eks/]
-* AWS Service mesh [https://aws.amazon.com/app-mesh/]
-
-## K8s Service Registeration, Discovery and Autoscaling
-Kubernetes has an integrated pattern for decoupling configuration from application or container. This pattern makes use of two Kubernetes components: ConfigMaps and Secrets.
-### ConfigMap
-Externalized data stored within kubernetes.
-* Can be referenced through several different means:
-* environment variable
-* a command line argument (via env var) injected as a file into a volume mount. Can be created from a manifest, literals, directories, or files directly.
-
-### Secret
-* Functionally identical to a ConfigMap.
-* Stored as base64 encoded content.
-* Encrypted at rest within etcd (if configured!).
-* Ideal for username/passwords, certificates or other sensitive information that should not be stored in a container.Can be created from 
-  a manifest, literals, directories, or from files directly.
-
-Secrets and ConfigMaps both follow key-value pair styles to store information. Both the files have .yaml extension. The main difference is that the Secrets store the values in the base64 encoded format. Secret allows us to store confidential information, such as passwords, OAuth tokens, and SSH keys. A pod can use a Secret in either of the following two ways:
-* As files in a volume mounted on its containers
-* Kubelet uses secrets while pulling images for the pod
-* So, let us learn to encode and decode given String(s) into base64 encoding format.
-
-### Kubernetes Services Types
-There are 4 major service types:
-1. ClusterIP (default)
-2. NodePort
-3. LoadBalancer
-4. ExternalName
-
-### Scaling a Deployment
-kubectl scale deployment/user --replicas=10
-
-### CI System Example
-
-# Udagram Image Filtering Microservice
-Udagram is a simple cloud application developed alongside the Udacity Cloud Engineering Nanodegree. It allows users to register and log into a web client, post photos to the feed, and process photos using an image filtering microservice.
-
-The project is split into three parts:
-1. [The Simple Frontend](/udacity-c3-frontend)
-A basic Ionic client web application which consumes the RestAPI Backend. 
-2. [The RestAPI Feed Backend](/udacity-c3-restapi-feed), a Node-Express feed microservice.
-3. [The RestAPI User Backend](/udacity-c3-restapi-user), a Node-Express user microservice.
 
 ## Getting Setup
 
@@ -560,161 +221,22 @@ Ionic CLI provides an easy to use development server to run and autoreload the f
 ```bash
 ionic serve
 ```
-
 ### Building the Static Frontend Files
 Ionic CLI can build the frontend into static HTML/CSS/JavaScript files. These files can be uploaded to a host to be consumed by users on the web. Build artifacts are located in `./www`. To build from source, open terminal and run:
 ionic build
 
-----------------------------------------------------------------------------------------------------------------------------
-#### Udagram microservices project, I have setup my development environment on AWS EC2 interface. Reason for doing so is I have windows home edition system and finding it challanging to do the setup for docker and kubernetes on it. Also it add a bit of additional complexity to project, but it help me to learn a lot about the AWS ecosystem and understanding about the different components. My Udagram frontend is deployed on S3 bucket and other rest apis on the EC2 interface. Please find the following steps for the project development instructions.
-
-## Setting up Udagram Microservice Dev Environment on AWS EC2
-### Task-01 Installing GIT on AWS EC2
-Commands :
-1. Perform a quick update on your instance:
-   sudo yum update -y
-2. #Install git in your EC2 instance
-   sudo yum install git -y 
-3. #Check git version
-   git version
-
-### Task-02 Install node version manager (nvm) by typing the following at the command line.
-1. curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-2. Activate nvm by typing the following at the command line.
-   . ~/.nvm/nvm.sh 
-3. Use nvm to install the latest version of Node.js by typing the following at the command line. Installing Node.js also installs the  
-   Node Package Manager (npm) so you can install additional modules as needed.
-   nvm install node
-4. Test that Node.js is installed and running correctly by typing the following at the command line.
-   node -e "console.log('Running Node.js ' + process.version)"
-
-### Task-03 Install the Ionic CLI
-1.  npm install -g @ionic/cli
-
-### Task-04 install python3 on AWS
-1. sudo yum install python3
-
-### Task-05 Check installations
-1. node --version
-2. npm --version
-3. ionic --version
-
-### Task-06 GIT Clone Repo
-Current repo [Clone the project repo]
-
-### Task-07 Command to build and run project
-1. npm install
-2. npm install bcrypt
-3. source ~/.bash_profile
-4. npm run dev
-
-### Task-08 - Problem connecting to postgress database on AWS from EC2 instance
-1. Check the username/password.
-2. Security Groups while creating RDS -Pos
-tgress, allocate default security group which does not have permission for inbound and 
-   outbound traffic. Need to update the same.
-
-### Task-09 Installing Dockers on AWS EC2 Linux instance (Docker Installation)
-1. Create EC2 with Amazon Linux AMI (Linux version should be > 2.2.14)
-2. Login to your EC2 with PuTTY
-3. Do an update of Amzon Linux
-   * "sudo yum update"
-4. Now for installing docker run below command:
-   * "sudo yum install -y docker"
-5. Give permission
-   * "sudo usermod -a -G docker ec2-user"
-6. Start Docker Service
-   * "sudo service docker start"
-7. Run below command to get docker service up automatically after reboot:
-   * "sudo chkconfig docker on"
-8. Optionally, create a new user for Docker management and add him to Docker (default) group
-   * "useradd dockeradmin"
-   * "passwd dockeradmin"
-   * "usermod -aG docker dockeradmin"
-9. Once you have Docker installed, open a terminal and run:
-   * "docker run alpine echo hello world"
-10. Congratulations! You are now running Docker!
-
-### Task-10 Converting the monolithic application to microservices: (Dockerizing the services) - Done
-1. Create a project folder in your local computer and clone the following Git repository -
-   https://github.com/udacity/nd9990-c3-microservices-v1
-2. Create your Dockerfile
-3. Build the Image for the "user" service
-   * docker build -t <your_dockerhub_username_lowercase>/udacity-restapi-user .
-4. Build the image for the "feed" service
-   * docker build -t <your_dockerhub_username_lowercase>/udacity-restapi-feed . 
-5. Build the image for the "frontend" service
-   * docker build -t <your_dockerhub_username_lowercase>/udacity-frontend . 
-6. Optional Step : If you face any errors, please need to update the Angular dependencies. Try to update them before building the image 
-   as follows:
-   * sudo npm install -g @angular/cli@latest
-   * sudo ng update --all --force
-   * docker build -t <your_dockerhub_username_lowercase>/udacity-frontend . 
-7. If you want to remove any image, use the following commands:
-   * docker image rm -f <image_name/ID>
-   * docker image prune
-8. ### Dockerizing the services (Commands)
-   sudo docker run --rm --publish 8103:8103 -v $HOME/.aws:/root/.aws --env POSTGRESS_HOST=$POSTGRESS_HOST --env  
-   POSTGRESS_USERNAME=$POSTGRESS_USERNAME --env POSTGRESS_PASSWORD=$POSTGRESS_PASSWORD --env POSTGRESS_DB=$POSTGRESS_DB --env    
-   AWS_REGION=$AWS_REGION --env AWS_PROFILE=$AWS_PROFILE --env AWS_BUCKET=$AWS_BUCKET --env JWT_SECRET=$JWT_SECRET --name feed4 
-   amitgoswami1027/udacity-restapi-feed
-9. Docker Compose Installation
-   * sudo curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-   * After you do the curl command , it'll put docker-compose into the : /usr/local/bin
-   * sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-   * which docker-compose
-   * sudo /home/your-user/your-path-to-compose/docker-compose up
-   
-sudo chmod +x /usr/local/bin/docker-compose
-### Important Commands used during the setup on AWS EC2. 
-1. Set Pythons path : /usr/bin/python3
-2. npm install node-pre-gyp -g
-3. npm config set python /usr/bin/python3
-4. node-gyp --python /usr/bin/python3
-5. sudo yum install /usr/bin/g++
-npm install sequelize
-npm install sequelize-typescript
-npm i sequelize@latest --save 
-npm i sequelize-typescript@latest --save
-6. npm ci
-7. Setting Environment variables for the microservices in ~/.bash_profile file
-   export POSTGRESS_USERNAME=myusername;
-   export POSTGRESS_PASSWORD=mypassword;
-   export POSTGRESS_DB=postgres;
-   export POSTGRESS_HOST=udagramdemo.abc4def.us-east-2.rds.amazonaws.com;
-   export AWS_REGION=us-east-2;
-   export AWS_PROFILE=default;
-   export AWS_BUCKET=udagramdemo;
-   export JWT_SECRET=helloworld;
-8. source ~/.bash_profile
-9. Run your Container (simplified version)
-   docker run --publish 8080:8080 --name feed <your_dockerhub_username_lowercase>/udacity-restapi-feed
-10. Run your Container (working version) - Dockerizing the services
-    docker run --rm --publish 8080:8080 -v $HOME/.aws:/root/.aws --env POSTGRESS_HOST=$POSTGRESS_HOST --env 
-    POSTGRESS_USERNAME=$POSTGRESS_USERNAME --env POSTGRESS_PASSWORD=$POSTGRESS_PASSWORD --env POSTGRESS_DB=$POSTGRESS_DB --env 
-    AWS_REGION=$AWS_REGION --env AWS_PROFILE=$AWS_PROFILE --env AWS_BUCKET=$AWS_BUCKET --env JWT_SECRET=$JWT_SECRET --name feed 
-    <your_dockerhub_username_lowercase>/udacity-restapi-feed
-11. Verify the Running Container
-    curl http://localhost:8080/api/v0/feed
-    docker container ls
-    docker container kill <container_name>
-    docker container prune
-12. Check The Logs
-    docker logs feed
-    docker logs feed --follow
-    docker logs feed --tail 3
-13. Debugging Inside The Container
-    docker exec -it feed bash
-14. Pushing the images to dockerhub
-    docker push yourdockerhubname/udacity-restapi-feed 
-
-### IMPORTANT LINKS TO READ
-#### Kubernetes Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-#### AWS EKS : https://aws.amazon.com/eks/
-#### WHY USE EKS(IMP) : https://itnext.io/kubernetes-is-hard-why-eks-makes-it-easier-for-network-and-security-architects-ea6d8b2ca965
-#### SET UP AWS-IAM AUTH: https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
-#### K8s Introduction: https://kubernetes.io/docs/reference/kubectl/overview/
-#### K8s Cheatsheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+## Technologies (Important Reads)
+* Kubernetes Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+* AWS EKS : https://aws.amazon.com/eks/
+* WHY USE EKS(IMP) : https://itnext.io/kubernetes-is-hard-why-eks-makes-it-easier-for-network-and-security-architects-ea6d8b2ca965
+* SET UP AWS-IAM AUTH: https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
+* K8s Introduction: https://kubernetes.io/docs/reference/kubectl/overview/
+* K8s Cheatsheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+## KUBERNETES LINKS
+* KUBERNETES IS HARD:https://itnext.io/kubernetes-is-hard-why-eks-makes-it-easier-for-network-and-security-architects-ea6d8b2ca965
+* [Deploying a Kubernetes Cluster with Amazon EKS](https://logz.io/blog/amazon-eks-cluster/).
+* ttps://www.poeticoding.com/create-a-high-availability-kubernetes-cluster-on-aws-with-kops/
+* https://eksworkshop.com/spot/cloudformation/kubeconfig/
 #### DATABASE READS
 * SQL INJECTIONS
 * https://sequelize.org/master/manual/migrations.html#creating-first-seed
@@ -722,5 +244,3 @@ npm i sequelize-typescript@latest --save
 * PASSWORD MISUSE : https://haveibeenpwned.com/
 * JWT : https://jwt.io/
 * https://www.digitalocean.com/community/tutorials/angular-authentication-auth0
-
-

@@ -137,7 +137,7 @@ docker-compose stop
 docker-compose down
 ```
 
-## Starting the app as a Kubernetes cluster locally
+## Starting the app as a Kubernetes cluster 
 - To create K8s ***configMap***, ***secrets***, ***deployments*** and ***services*** use the below command:
 
 ```shell
@@ -157,10 +157,6 @@ kubectl port-forward <frontend-pod> 8100:80
 
 ***Note***: You can find screenshots for the deployment (./screenshots/).
 
-CONTAINERS: Abstraction of an application and its dependencies 
-KUBERNETES PODS: Abstraction of multiple containers
-KUBERNETES SERVICES: Abstraction of pods and their interfaces
-
 #### Links:
 * https://www.simform.com/use-nodejs-with-react/
 * Rubic Guidelines : https://review.udacity.com/#!/rubrics/2578/view
@@ -173,49 +169,9 @@ KUBERNETES SERVICES: Abstraction of pods and their interfaces
 * kubectl apply -f pod-example/pod.yaml
 * kubectl get pod -o wide
 
-* Labels : Labels are "tags" in the form of key/value pairs that are associated with Kubernetes objects (Deployments/Pods). Multiple 
-  objects may belong to a single Label. Labeling helps to identify all the objects (and resources) associated with a particular Label   
-  value (say "Production" or "Testing"). Applying a Label does not have any impact on the behavior of the underlying object. They are 
-  helpful in better organizing the objects (and resources).
+* Labels : Labels are "tags" in the form of key/value pairs that are associated with Kubernetes objects (Deployments/Pods). Multiple objects may belong to a single Label. Labeling helps to identify all the objects (and resources) associated with a particular Label value (say "Production" or "Testing"). Applying a Label does not have any impact on the behavior of the underlying object. They are helpful in better organizing the objects (and resources).
 
 ![](images/label.png)
-
-## Getting Setup
- Frontend is designed to work with the RestAPI backends). It is recommended you stand up the backend first, test using Postman, and then the frontend should integrate.
-
-### Installing Node and NPM
-This project depends on Nodejs and Node Package Manager (NPM). Before continuing, you must download and install Node (NPM is included) from [https://nodejs.com/en/download](https://nodejs.org/en/download/).
-
-### Installing Ionic Cli
-The Ionic Command Line Interface is required to serve and build the frontend. Instructions for installing the CLI can be found in the [Ionic Framework Docs](https://ionicframework.com/docs/installation/cli).
-
-### Installing project dependencies
-This project uses NPM to manage software dependencies. NPM Relies on the package.json file located in the root of this repository. After cloning, open your terminal and run:
-```bash
-npm install
-```
->_tip_: **npm i** is shorthand for **npm install**
-
-### Setup Backend Node Environment
-You'll need to create a new node server. Open a new terminal within the project directory and run:
-1. Initialize a new project: `npm init`
-2. Install express: `npm i express --save`
-3. Install typescript dependencies: `npm i ts-node-dev tslint typescript  @types/bluebird @types/express @types/node --save-dev`
-4. Look at the `package.json` file from the RestAPI repo and copy the `scripts` block into the auto-generated `package.json` in this project. This will allow you to use shorthand commands like `npm run dev`
-
-### Configure The Backend Endpoint
-Ionic uses enviornment files located in `./src/enviornments/enviornment.*.ts` to load configuration variables at runtime. By default `environment.ts` is used for development and `enviornment.prod.ts` is used for produciton. The `apiHost` variable should be set to your server url either locally or in the cloud.
-
-***
-### Running the Development Server
-Ionic CLI provides an easy to use development server to run and autoreload the frontend. This allows you to make quick changes and see them in real time in your browser. To run the development server, open terminal and run:
-
-```bash
-ionic serve
-```
-### Building the Static Frontend Files
-Ionic CLI can build the frontend into static HTML/CSS/JavaScript files. These files can be uploaded to a host to be consumed by users on the web. Build artifacts are located in `./www`. To build from source, open terminal and run:
-ionic build
 
 ## Technologies (Important Reads)
 * Kubernetes Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/

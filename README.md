@@ -115,7 +115,7 @@ Kops (Kubernetes Operations), it’s an open-source free tool which helps us to 
 - [The Image Filtering RESTful API](https://hub.docker.com/repository/docker/amitgoswami1027/capstone-restapi-image)
 - [The Nginx Reverse Proxy](https://hub.docker.com/repository/docker/amitgoswami1027/capstone-reverseproxyv2)
 
-## Starting the services as Docker containers locally
+## Starting the services as Docker
 - Since the `docker-compose` file uses environment variables, therefore you need to tell the system to use the environment variables from your `~/.profile` file using the command source `~/.profile`.
 
 - Navigate to [deployment/docker folder](./deployment/docker/) and build the images for each of our defined services, using the following command::
@@ -150,13 +150,12 @@ kubectl port-forward <reverseproxy-pod> 8080:8080
 kubectl port-forward <frontend-pod> 8100:80
 ```
 
-- Go to the browser and run [http://localhost:8100/](http://localhost:8100/) to see my Udagram application up and running.
-
 ## Links
-- [REST API server](http://a4328ed99607011eaaa110ae3011d93e-707550298.us-east-1.elb.amazonaws.com:8080/api/v0).
-- [Ionic client](http://a438417d2607011eaaa110ae3011d93e-1338661806.us-east-1.elb.amazonaws.com:8100).
 
-***Note***: You can find screenshots for the deployment [here](./screenshots/).
+- [REST API server](http://a554ce0af3ab24996a6de96e85ab5130-409319829.us-east-1.elb.amazonaws.com:8080/api/v0).
+- [Ionic client](http://a554ce0af3ab24996a6de96e85ab5130-409319829.us-east-1.elb.amazonaws.com:8100).
+
+***Note***: You can find screenshots for the deployment (./screenshots/).
 
 CONTAINERS: Abstraction of an application and its dependencies 
 KUBERNETES PODS: Abstraction of multiple containers

@@ -115,6 +115,12 @@ Kops (Kubernetes Operations), it’s an open-source free tool which helps us to 
 - [The Image Filtering RESTful API](https://hub.docker.com/repository/docker/amitgoswami1027/capstone-restapi-image)
 - [The Nginx Reverse Proxy](https://hub.docker.com/repository/docker/amitgoswami1027/capstone-reverseproxyv2)
 
+* https://hub.docker.com/repository/docker/amitgoswami1027/capstone-frontend
+* [The Feed RESTful API] https://hub.docker.com/repository/docker/amitgoswami1027/capstone-restapi-feedv2
+* [The User RESTful API] https://hub.docker.com/repository/docker/amitgoswami1027/capstone-restapi-userv2
+* [The Image Filtering RESTful API] https://hub.docker.com/repository/docker/amitgoswami1027/capstone-restapi-image
+* [The Nginx Reverse Proxy] https://hub.docker.com/repository/docker/amitgoswami1027/capstone-reverseproxyv2
+
 ## Starting the services as Docker
 - Since the `docker-compose` file uses environment variables, therefore you need to tell the system to use the environment variables from your `~/.profile` file using the command source `~/.profile`.
 
@@ -154,6 +160,8 @@ kubectl port-forward <frontend-pod> 8100:80
 
 - [REST API server](http://a554ce0af3ab24996a6de96e85ab5130-409319829.us-east-1.elb.amazonaws.com:8080/api/v0).
 - [Ionic client](http://a554ce0af3ab24996a6de96e85ab5130-409319829.us-east-1.elb.amazonaws.com:8100).
+- http://a554ce0af3ab24996a6de96e85ab5130-409319829.us-east-1.elb.amazonaws.com:8080/api/v0
+- http://a554ce0af3ab24996a6de96e85ab5130-409319829.us-east-1.elb.amazonaws.com:8100
 
 ***Note***: You can find screenshots for the deployment (./screenshots/).
 

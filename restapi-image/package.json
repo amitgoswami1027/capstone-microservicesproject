@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^17.1.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "jimp": "^0.12.1",
     "sequelize": "^5.21.11",
     "sequelize-typescript": "^1.1.0"
